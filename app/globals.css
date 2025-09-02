@@ -1,0 +1,29 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+nav {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: #eee;
+}
+
+main {
+  padding: 1rem;
+}
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 400px;
+}
