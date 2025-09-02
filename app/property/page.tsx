@@ -33,8 +33,8 @@ export default function PropertyPage() {
   };
 
   const roomImages: RoomImage[] = [
-    { src: '/images/living-room/placeholder.png', alt: 'Living Room' },
-    { src: '/images/kitchen/placeholder.png', alt: 'Kitchen' }
+    { src: '/images/living-room/IMG_0190.jpg', alt: 'Living Room' },
+    { src: '/images/kitchen/IMG_0186.jpg', alt: 'Kitchen' }
   ];
 
   return (

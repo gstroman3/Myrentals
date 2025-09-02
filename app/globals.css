@@ -1,17 +1,65 @@
+/* Color palette */
+:root {
+  --color-primary: #1E3A8A; /* Deep Navy */
+  --color-accent: #3B82F6; /* Bright Sky Blue */
+  --color-secondary: #60A5FA; /* Soft Blue */
+  --color-bg-light: #F8FAFC; /* Blue-tinted white */
+  --color-section-bg: #E0F2FE; /* Pale Blue */
+  --color-text-primary: #111827; /* Neutral Gray-Black */
+  --color-text-secondary: #4B5563; /* Medium Gray */
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
+  background: var(--color-bg-light);
+  color: var(--color-text-primary);
 }
 
 nav {
   display: flex;
   gap: 1rem;
   padding: 1rem;
-  background: #eee;
+  background: var(--color-primary);
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+}
+
+nav a:hover {
+  color: var(--color-secondary);
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-secondary);
 }
 
 main {
   padding: 1rem;
+}
+
+section {
+  padding: 2rem 1rem;
+  background: var(--color-bg-light);
+}
+
+section.alt-section {
+  background: var(--color-section-bg);
+}
+
+h1, h2, h3 {
+  color: var(--color-text-primary);
+}
+
+p, label {
+  color: var(--color-text-secondary);
 }
 
 .gallery {
@@ -26,4 +74,28 @@ form {
   flex-direction: column;
   gap: 0.5rem;
   max-width: 400px;
+}
+
+button,
+.btn {
+  background: var(--color-accent);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+button:hover,
+.btn:hover {
+  background: var(--color-secondary);
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 1rem;
+}
+
+.card:hover {
+  background: var(--color-section-bg);
 }
