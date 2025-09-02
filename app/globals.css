@@ -16,20 +16,44 @@ body {
   color: var(--color-text-primary);
 }
 
-nav {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem;
+header .top-bar {
   background: var(--color-primary);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.25rem 1rem;
+  font-size: 0.875rem;
 }
 
-nav a {
-  color: #fff;
+nav.main-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: var(--color-text-primary);
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.nav-links a {
+  color: var(--color-text-primary);
   text-decoration: none;
 }
 
-nav a:hover {
-  color: var(--color-secondary);
+.nav-links a:hover {
+  color: var(--color-accent);
 }
 
 a {
@@ -98,4 +122,43 @@ button:hover,
 
 .card:hover {
   background: var(--color-section-bg);
+}
+
+/* Hero section */
+.hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 4rem 1rem;
+  background: #fff;
+}
+
+.hero .text {
+  flex: 1;
+  min-width: 280px;
+}
+
+.hero .hero-image {
+  flex: 1;
+  min-width: 280px;
+}
+
+.hero-image img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  color: var(--color-accent);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  font-size: 0.875rem;
+}
+
+.hero h1 {
+  font-size: 2rem;
+  margin-top: 0.5rem;
 }
