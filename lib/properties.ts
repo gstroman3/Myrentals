@@ -91,10 +91,11 @@ export const properties: Property[] = [
       {
         title: 'Master Bedroom',
         images: [
-          { src: '/images/master-bed/IMG_1746.jpg', alt: 'Master bedroom 1' },
-          { src: '/images/master-bed/IMG_1749.jpg', alt: 'Master bedroom 2' },
-          { src: '/images/master-bed/IMG_1750.jpg', alt: 'Master bedroom 3' },
-          { src: '/images/master-bed/IMG_1759.jpg', alt: 'Master bedroom 4' },
+          { src: '/images/master-bed/closet.jpg', alt: 'Master bedroom 1' },
+          { src: '/images/master-bed/IMG_1746.jpg', alt: 'Master bedroom 2' },
+          { src: '/images/master-bed/IMG_1749.jpg', alt: 'Master bedroom 3' },
+          { src: '/images/master-bed/IMG_1750.jpg', alt: 'Master bedroom 4' },
+
         ],
       },
       {
