@@ -43,8 +43,8 @@ export default function Home(): ReactElement {
               <h1>Easy Rent your Rentals</h1>
               <p>Experience luxury stays made simple.</p>
               <div className="actions">
-                <Link href="/properties/santa-barbara-estate#book" className="btn">Book Now</Link>
-                <Link href="/properties/santa-barbara-estate#availability" className="btn secondary">View Availability</Link>
+                <Link href="/properties/#" className="btn">Book Now</Link>
+                <Link href="/properties/#" className="btn secondary">View Availability</Link>
               </div>
             </div>
           </section>

@@ -1,33 +1,31 @@
-import Link from 'next/link';
 import Image from 'next/image';
 import type { ReactElement } from 'react';
 import Header from '@/components/Header';
 import { properties } from '@/lib/properties';
 
 export default function PropertiesPage(): ReactElement {
-  return (
-    <>
-      <Header />
-      <section>
-        <h1>Available Properties</h1>
-        <div className="gallery">
-          {properties.map((property) => (
-            <div key={property.slug} className="card">
-              <Image
-                src={property.hero.src}
-                alt={property.hero.alt}
-                width={400}
-                height={300}
-              />
-              <h2>{property.title}</h2>
-              <p>{property.location}</p>
-              <Link href={`/properties/${property.slug}`} className="btn">
-                View Details
-              </Link>
-            </div>
-          ))}
-        </div>
-      </section>
-    </>
-  );
+    const property = properties[0];
+    return (
+        <>
+            <Header overlay/>
+            <section className="gallery-page">
+                {property.rooms.map((room) => (
+                    <div key={room.title} className="room-section">
+                        <h2>{room.title}</h2>
+                        <div className="gallery-grid">
+                            {room.images.map((img) => (
+                                <Image
+                                    key={img.src}
+                                    src={img.src}
+                                    alt={img.alt}
+                                    width={600}
+                                    height={400}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </section>
+        </>
+    );
 }
