@@ -1,10 +1,16 @@
 'use client';
 
 import Image from 'next/image';
-import { type ReactElement, useState } from 'react';
+import { type ReactElement, useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import SectionSlider from '@/components/SectionSlider';
 import { properties, type RoomImage } from '@/lib/properties';
+
+const heroSlides = [
+    '/images/backyard/IMG_0201.jpg',
+    '/images/living-room/IMG_0190.jpg',
+    '/images/loft/IMG_1751.jpg',
+];
 
 export default function PropertiesPage(): ReactElement {
     const property = properties[0];
@@ -12,6 +18,14 @@ export default function PropertiesPage(): ReactElement {
         id: room.title.toLowerCase().replace(/\s+/g, '-'),
         label: room.title,
     }));
+
+    const [heroIndex, setHeroIndex] = useState(0);
+    useEffect(() => {
+        const id = setInterval(() => {
+            setHeroIndex((i) => (i + 1) % heroSlides.length);
+        }, 5000);
+        return () => clearInterval(id);
+    }, []);
 
     const [lightboxImages, setLightboxImages] = useState<RoomImage[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -31,7 +45,25 @@ export default function PropertiesPage(): ReactElement {
         setCurrentIndex((i) => (i + 1) % lightboxImages.length);
     return (
         <>
-            <Header overlay/>
+           <Header overlay />
+            <section className="gallery-hero">
+                <div className="background">
+                    {heroSlides.map((src, i) => (
+                        <Image
+                            key={src}
+                            src={src}
+                            alt=""
+                            fill
+                            priority={i === 0}
+                            className={`slide${i === heroIndex ? ' active' : ''}`}
+                        />
+                    ))}
+                </div>
+                <div className="content">
+                    <h1>Luxe Townhome</h1>
+                    <p>Ashburn, VA</p>
+                </div>
+            </section>
             <section className="gallery-page">
                 {property.rooms.map((room) => (
                     <div
@@ -46,8 +78,9 @@ export default function PropertiesPage(): ReactElement {
                                     <Image
                                         src={img.src}
                                         alt={img.alt}
-                                        width={600}
-                                        height={400}
+                                        fill
+                                        sizes="(max-width: 600px) 100vw, 300px"
+                                        style={{ objectFit: 'cover' }}
                                         onClick={() => openLightbox(room.images, idx)}
                                     />
                                 </div>
