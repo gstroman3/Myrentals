@@ -1,13 +1,14 @@
 'use client';
 import Image from 'next/image';
 import { useState, FormEvent } from 'react';
-import { notFound } from 'next/navigation';
+import { useParams, notFound } from 'next/navigation';
 import Header from '@/components/Header';
 import SectionSlider from '@/components/SectionSlider';
 import { getPropertyBySlug } from '@/lib/properties';
 
-export default function PropertyDetail({ params }: { params: { slug: string } }) {
-  const property = getPropertyBySlug(params.slug);
+export default function PropertyDetail() {
+  const { slug } = useParams<{ slug: string }>();
+  const property = getPropertyBySlug(slug);
 
   const [contact, setContact] = useState({ name: '', email: '', message: '' });
   const [booking, setBooking] = useState({ checkIn: '', checkOut: '' });
