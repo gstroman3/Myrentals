@@ -13,13 +13,28 @@ interface SectionSliderProps {
 
 export default function SectionSlider({ sections }: SectionSliderProps) {
   const sliderRef = useRef<HTMLDivElement>(null);
-  const [hovered, setHovered] = useState<number | null>(null);
   const [active, setActive] = useState(0);
+  const [labelIndex, setLabelIndex] = useState<number | null>(null);
+  const labelTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showLabel = (index: number, persist = false) => {
+    if (labelTimeout.current) {
+      clearTimeout(labelTimeout.current);
+      labelTimeout.current = null;
+    }
+    setLabelIndex(index);
+    if (!persist) {
+      labelTimeout.current = setTimeout(() => setLabelIndex(null), 1000);
+    }
+  };
 
   const scrollTo = (index: number) => {
     const id = sections[index]?.id;
     if (id) {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+      document
+        .getElementById(id)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      showLabel(index);
     }
   };
 
@@ -44,6 +59,7 @@ export default function SectionSlider({ sections }: SectionSliderProps) {
         ([entry]) => {
           if (entry.isIntersecting) {
             setActive(index);
+            showLabel(index);
           }
         },
         { rootMargin: '-50% 0px -50% 0px' }
@@ -69,10 +85,10 @@ export default function SectionSlider({ sections }: SectionSliderProps) {
           key={s.id}
           className={`slider-dot${active === i ? ' active' : ''}`}
           onClick={() => scrollTo(i)}
-          onMouseEnter={() => setHovered(i)}
-          onMouseLeave={() => setHovered(null)}
+          onMouseEnter={() => showLabel(i, true)}
+          onMouseLeave={() => setLabelIndex(null)}
         >
-          {hovered === i && <span className="label">{s.label}</span>}
+          {labelIndex === i && <span className="label">{s.label}</span>}
         </div>
       ))}
     </div>
