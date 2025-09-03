@@ -1,5 +1,6 @@
 import './globals.css';
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
@@ -13,19 +14,20 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <body>
         <header>
-          <div className="top-bar">
-            <span>(1.805) 565-4000</span>
-            <span>info@homesinsantabarbara.com</span>
-          </div>
           <nav className="main-nav">
             <Link href="/" className="logo">
-              Stroman Properties
+              <Image
+                src="/images/logo_white.png"
+                alt="Stroman Properties logo"
+                width={160}
+                height={40}
+                priority
+              />
             </Link>
             <div className="nav-links">
-              <Link href="#">Offerings</Link>
+              <Link href="#">Properties</Link>
               <Link href="#">About</Link>
               <Link href="#">Neighborhoods</Link>
-              <Link href="#">Blog</Link>
               <Link href="/property" className="btn">
                 Contact
               </Link>
