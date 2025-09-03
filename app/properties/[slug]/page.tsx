@@ -1,12 +1,12 @@
-import { useParams, notFound } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import PropertyDetailClient from './PropertyDetailClient';
 import { getPropertyBySlug, properties } from '@/lib/properties';
 
-interface PageProps {
+export default function PropertyDetail({
+  params,
+}: {
   params: { slug: string };
-}
-
-export default function PropertyDetail({ params }: PageProps) {
+}) {
   const property = getPropertyBySlug(params.slug);
   if (!property) return notFound();
   return <PropertyDetailClient property={property} />;
