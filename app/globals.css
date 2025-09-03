@@ -191,10 +191,11 @@ button:hover,
 /* Landing page hero */
 .landing-hero {
   position: relative;
+  z-index: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
   height: 100dvh;
   padding: 0 2rem;
   color: #fff;
@@ -244,6 +245,7 @@ button:hover,
   left: 0;
   right: 0;
   z-index: 10;
+  padding-top: env(safe-area-inset-top);
 }
 
 .header-overlay nav.main-nav {
