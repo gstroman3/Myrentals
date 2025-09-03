@@ -440,7 +440,7 @@ button:hover,
   background: rgba(30, 58, 138, 0.4);
   border: 1px solid rgba(30, 58, 138, 0.6);
   border-radius: 1rem;
-  z-index: 1000;
+  z-index: 998;
   touch-action: none;
 }
 

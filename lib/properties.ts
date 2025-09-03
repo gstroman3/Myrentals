@@ -18,17 +18,29 @@ export type Property = {
 
 export const properties: Property[] = [
   {
-    slug: 'santa-barbara-estate',
-    title: 'Santa Barbara Estate',
-    location: 'Santa Barbara, CA',
+    slug: 'ashburn-estate',
+    title: 'Ashburn Estate',
+    location: 'Ashburn, VA',
     hero: { src: '/images/backyard/IMG_0198.jpg', alt: 'Luxury home exterior' },
     rooms: [
       {
-        title: 'Backyard',
+        title: 'Kitchen',
         images: [
-          { src: '/images/backyard/IMG_0198.jpg', alt: 'Backyard view' },
-          { src: '/images/backyard/IMG_0201.jpg', alt: 'Backyard view 2' },
+          { src: '/images/kitchen/IMG_0186.jpg', alt: 'Kitchen 1' },
+          { src: '/images/kitchen/IMG_0187.jpg', alt: 'Kitchen 2' },
+          { src: '/images/kitchen/IMG_0188.jpg', alt: 'Kitchen 3' },
         ],
+      },
+      {
+        title: 'Living Room',
+        images: [
+          { src: '/images/living-room/IMG_0190.jpg', alt: 'Living room 1' },
+          { src: '/images/living-room/IMG_0191.jpg', alt: 'Living room 2' },
+        ],
+      },
+      {
+        title: 'Dining',
+        images: [{ src: '/images/dining/IMG_0189.jpg', alt: 'Dining Room' }],
       },
       {
         title: 'Deck',
@@ -38,14 +50,13 @@ export const properties: Property[] = [
         ],
       },
       {
-        title: 'Dining',
-        images: [{ src: '/images/dining/IMG_0189.jpg', alt: 'Dining Room' }],
-      },
-      {
-        title: 'First Floor Bath',
+        title: 'Master Bedroom',
         images: [
-          { src: '/images/first-floor-bath/IMG_0204.jpg', alt: 'First floor bath 1' },
-          { src: '/images/first-floor-bath/IMG_0210.jpg', alt: 'First floor bath 2' },
+          { src: '/images/master-bed/IMG_1746.jpg', alt: 'Master bedroom 1' },
+          { src: '/images/master-bed/IMG_1749.jpg', alt: 'Master bedroom 2' },
+          { src: '/images/master-bed/IMG_1750.jpg', alt: 'Master bedroom 3' },
+          { src: '/images/master-bed/closet.jpg', alt: 'Master bedroom 4' },
+
         ],
       },
       {
@@ -63,18 +74,9 @@ export const properties: Property[] = [
         ],
       },
       {
-        title: 'Kitchen',
+        title: 'Shared Guest Bath',
         images: [
-          { src: '/images/kitchen/IMG_0186.jpg', alt: 'Kitchen 1' },
-          { src: '/images/kitchen/IMG_0187.jpg', alt: 'Kitchen 2' },
-          { src: '/images/kitchen/IMG_0188.jpg', alt: 'Kitchen 3' },
-        ],
-      },
-      {
-        title: 'Living Room',
-        images: [
-          { src: '/images/living-room/IMG_0190.jpg', alt: 'Living room 1' },
-          { src: '/images/living-room/IMG_0191.jpg', alt: 'Living room 2' },
+          { src: '/images/shared-guest-bath/IMG_1217.jpg', alt: 'Shared guest bath' },
         ],
       },
       {
@@ -89,28 +91,27 @@ export const properties: Property[] = [
         ],
       },
       {
-        title: 'Master Bedroom',
+        title: 'First Floor Bath',
         images: [
-          { src: '/images/master-bed/closet.jpg', alt: 'Master bedroom 1' },
-          { src: '/images/master-bed/IMG_1746.jpg', alt: 'Master bedroom 2' },
-          { src: '/images/master-bed/IMG_1749.jpg', alt: 'Master bedroom 3' },
-          { src: '/images/master-bed/IMG_1750.jpg', alt: 'Master bedroom 4' },
-
-        ],
-      },
-      {
-        title: 'Sauna',
-        images: [{ src: '/images/sauna/IMG_0195.jpg', alt: 'Sauna' }],
-      },
-      {
-        title: 'Shared Guest Bath',
-        images: [
-          { src: '/images/shared-guest-bath/IMG_1217.jpg', alt: 'Shared guest bath' },
+          { src: '/images/first-floor-bath/IMG_0204.jpg', alt: 'First floor bath 1' },
+          { src: '/images/first-floor-bath/IMG_0210.jpg', alt: 'First floor bath 2' },
         ],
       },
       {
         title: 'Weight Room',
         images: [{ src: '/images/weight-room/IMG_0212.jpg', alt: 'Weight room' }],
+      },
+
+      {
+        title: 'Sauna',
+        images: [{ src: '/images/sauna/IMG_0195.jpg', alt: 'Sauna' }],
+      },
+      {
+        title: 'Backyard',
+        images: [
+          { src: '/images/backyard/IMG_0198.jpg', alt: 'Backyard view' },
+          { src: '/images/backyard/IMG_0201.jpg', alt: 'Backyard view 2' },
+        ],
       },
     ],
   },
