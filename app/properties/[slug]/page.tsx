@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { useState, FormEvent } from 'react';
 import { notFound } from 'next/navigation';
 import Header from '@/components/Header';
+import SectionSlider from '@/components/SectionSlider';
 import { getPropertyBySlug } from '@/lib/properties';
 
 export default function PropertyDetail({ params }: { params: { slug: string } }) {
@@ -26,7 +27,7 @@ export default function PropertyDetail({ params }: { params: { slug: string } })
   return (
     <>
       <Header />
-      <section className="hero">
+      <section id="hero" className="hero">
         <div className="text">
           <p className="eyebrow">{property.location}</p>
           <h1>{property.title}</h1>
@@ -112,6 +113,14 @@ export default function PropertyDetail({ params }: { params: { slug: string } })
           <button type="submit">Request Booking</button>
         </form>
       </section>
+     <SectionSlider
+        sections={[
+                { id: 'hero', label: 'Overview' },
+                { id: 'gallery', label: 'Gallery' },
+                { id: 'contact', label: 'Contact' },
+                { id: 'book', label: 'Book' },
+                ]}
+     />
     </>
   );
 }
