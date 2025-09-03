@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://stromanproperties.com'),
   title: 'Stroman Properties',
   description: 'Luxury vacation rentals',
   icons: {
