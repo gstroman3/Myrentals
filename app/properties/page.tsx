@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { type ReactElement, useEffect, useState } from 'react';
 import Header from '@/components/Header';
+import ScrollButtons from '@/components/ScrollButtons'
 import SectionSlider from '@/components/SectionSlider';
 import { properties, type RoomImage } from '@/lib/properties';
 
@@ -48,6 +49,7 @@ export default function PropertiesPage(): ReactElement {
     return (
         <>
            <Header overlay />
+           <ScrollButtons />
             <section className="gallery-hero">
                 <div className="background">
                     {heroSlides.map((src, i) => (
@@ -68,8 +70,6 @@ export default function PropertiesPage(): ReactElement {
                         <span> {property.guests} guests</span>
                         <span>&bull;</span>
                         <span>{property.bedrooms} bedrooms</span>
-                        <span>&bull;</span>
-                        <span>{property.beds} beds</span>
                         <span>&bull;</span>
                         <span>{property.bathrooms} baths</span>
 
