@@ -95,16 +95,24 @@ export default function HomePage(): ReactElement {
           </p>
           <h3>A Hub of Fun and Entertainment</h3>
           <p>
-            Just minutes from your doorstep, you’ll find Topgolf Ashburn, the
+            Just minutes from your doorstep, you’ll find <strong>TopGolf Ashburn</strong>, the
             perfect spot to swing a club, enjoy music, and grab food and drinks
             with friends. It’s not just golf—it’s a full-scale entertainment
             experience that appeals to all ages.
           </p>
-          <div className="image-placeholder">📸 Topgolf photo</div>
+          <div className="image-placeholder">📸 TopGolf photo</div>
+          <p>
+            For shopping, dining, and nightlife, <strong>One Loudoun </strong>is a local favorite.
+              This walkable town center offers boutique shops, trendy restaurants,
+              craft breweries, and live entertainment. Whether you’re grabbing coffee
+              in the morning or enjoying a night out, it’s a perfect spot to soak in
+              the local vibe.
+          </p>
+          <div className="image-placeholder">📸 One Loudoun</div>
           <h3>Explore the Wonders of Flight</h3>
           <p>
-            If you’re fascinated by history, technology, or space, the Steven F.
-            Udvar-Hazy Center (part of the Smithsonian National Air and Space
+            If you’re fascinated by history, technology, or space, the <strong>Steven F.
+            Udvar-Hazy Center </strong>(part of the Smithsonian National Air and Space
             Museum) is a must-visit. Located right next to Dulles International
             Airport, the museum houses awe-inspiring aircraft and spacecraft,
             including the Space Shuttle Discovery. It’s an experience that brings
@@ -113,8 +121,8 @@ export default function HomePage(): ReactElement {
           <div className="image-placeholder">📸 Udvar-Hazy Museum photo</div>
           <h3>A Gateway to the Nation’s Capital</h3>
           <p>
-            Ashburn is also perfectly positioned for day trips into Washington,
-            D.C. In less than an hour, you can explore iconic landmarks such as
+            Ashburn is also perfectly positioned for day trips into <strong>Washington,
+            D.C. </strong>In less than an hour, you can explore iconic landmarks such as
             the U.S. Capitol, the National Mall, and the Smithsonian museums.
             Spend the day sightseeing, then return to Ashburn to unwind in a
             quieter, more relaxed setting.
@@ -122,11 +130,17 @@ export default function HomePage(): ReactElement {
           <div className="image-placeholder">📸 Washington, D.C. photo</div>
           <h3>Nature, Parks, and Local Charm</h3>
           <p>
-            If you’re looking to slow down, Ashburn and Loudoun County are home
-            to scenic parks, trails, and wineries. Stroll along the Potomac
-            River, bike through the Washington &amp; Old Dominion Trail, or enjoy
-            a glass of wine at one of the region’s many award-winning vineyards.
-            Ashburn offers the perfect balance of adventure and relaxation.
+            If you’re looking to slow down, Ashburn and Loudoun County are home to
+              scenic parks, trails, and wineries. Right next door, <strong>Bles Park </strong>
+              offers walking trails, wildlife viewing, and peaceful views along the Potomac
+              River—perfect for a morning stroll or an afternoon of fresh air.
+          </p>
+          <p>
+            Outdoor enthusiasts will also enjoy the <strong>Washington &amp; Old Dominion Trail,
+              </strong> a 45-mile rail-trail that runs through Ashburn and connects to many other
+              Northern Virginia communities. And if you’re looking for a more relaxed pace,
+              Loudoun’s rolling countryside is dotted with award-winning wineries and breweries
+              to explore.
           </p>
           <h3>The Perfect Balance</h3>
           <p>
