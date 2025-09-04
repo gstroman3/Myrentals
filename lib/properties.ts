@@ -25,7 +25,7 @@ export const properties: Property[] = [
     slug: 'ashburn-estate',
     title: 'Ashburn Estate',
     location: 'Ashburn, VA',
-    hero: { src: '/images/backyard/IMG_0198.jpg', alt: 'Luxury home exterior' },
+    hero: { src: '/images/front-house/front-right.jpg', alt: 'Luxury home exterior' },
     guests: 10,
     bedrooms: 3,
     beds: 4,
@@ -113,6 +113,13 @@ export const properties: Property[] = [
       {
         title: 'Sauna',
         images: [{ src: '/images/sauna/IMG_0195.jpg', alt: 'Sauna' }],
+      },
+      {
+        title: 'Front of House',
+        images: [
+          { src: '/images/front-house/front-center.jpg', alt: 'Front 1' },
+          { src: '/images/front-house/front-right.jpg', alt: 'Front 2' },
+        ],
       },
       {
         title: 'Backyard',

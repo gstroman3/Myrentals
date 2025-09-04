@@ -9,7 +9,8 @@ import Header from '@/components/Header';
 const slides = [
   '/images/kitchen/IMG_0186.jpg',
   '/images/living-room/IMG_0190.jpg',
-  '/images/backyard/IMG_0201.jpg',
+  '/images/master-bed/IMG_1746.jpg',
+  '/images/loft/IMG_1755.jpg',
   '/images/loft/IMG_1751.jpg',
 ];
 
