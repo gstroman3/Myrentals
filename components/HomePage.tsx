@@ -55,37 +55,23 @@ export default function HomePage(): ReactElement {
         </div>
       </section>
       <section id="about" className="alt-section">
-        <h1>Luxe Townhome Retreat</h1>
-        <h3>Hot Tub • Sauna • Loft Fireplace • Near Bles Park and One Loudoun</h3>
-        <p>
-          Welcome to your perfect getaway! This spacious <strong>3-bedroom, 3.5-bath
-          townhouse</strong> offers a mix of luxury and comfort just minutes from
-          everything you need. The master suite features a king-size bed, while
-          two additional bedrooms include cozy queens—plenty of space for
-          family, friends, or colleagues.
-        </p>
-        <h3>Resort-Style Amenities</h3>
-        <ul>
-          <li>Private hot tub for relaxing soaks</li>
-          <li>Sauna to unwind and rejuvenate</li>
-          <li>Weight room to keep up with your fitness routine</li>
-          <li>Top-floor loft with indoor/outdoor fireplace</li>
-        </ul>
-        <h3>Location Highlights</h3>
-        <p>
-          Step outside and you’ll find Bles Park just around the corner,
-          offering open green space, scenic trails, and the perfect spot for
-          outdoor fun. For dining, shopping, and entertainment, head over to One
-          Loudoun, where you’ll discover endless options for food, drinks, and
-          activities. With easy access to hiking trails and local attractions,
-          you’ll have something new to enjoy every day.
-        </p>
-        <p>
-          Whether you’re seeking adventure, relaxation, or a little of both,
-          this townhouse is designed to make your stay unforgettable.
-        </p>
-
-        <article className="about-article">
+          <article className="about-article">
+          <h1>Luxe Townhome Retreat</h1>
+          <h3>Hot Tub • Sauna • Loft Fireplace • Near Bles Park and One Loudoun</h3>
+          <p>
+            Welcome to your perfect getaway! This spacious <strong>3-bedroom, 3.5-bath
+            townhouse</strong> offers a mix of luxury and comfort just minutes from
+            everything you need. The master suite features a king-size bed, while
+            two additional bedrooms include cozy queens—plenty of space for
+            family, friends, or colleagues.
+          </p>
+          <h3>Resort-Style Amenities</h3>
+          <ul>
+            <li>Private hot tub for relaxing soaks</li>
+            <li>Sauna to unwind and rejuvenate</li>
+            <li>Weight room to keep up with your fitness routine</li>
+            <li>Top-floor loft with indoor/outdoor fireplace</li>
+          </ul>
           <h2>About the Area: Ashburn, Virginia</h2>
           <p>
             Welcome to Ashburn, Virginia—one of Northern Virginia’s most vibrant
@@ -100,7 +86,9 @@ export default function HomePage(): ReactElement {
             with friends. It’s not just golf—it’s a full-scale entertainment
             experience that appeals to all ages.
           </p>
-          <div className="image-placeholder">📸 TopGolf photo</div>
+          <div className="about-image">
+            <Image src="/images/things-to-do/tg.jpg" alt="TopGolf in Ashburn" fill />
+          </div>
           <p>
             For shopping, dining, and nightlife, <strong>One Loudoun </strong>is a local favorite.
               This walkable town center offers boutique shops, trendy restaurants,
@@ -108,7 +96,9 @@ export default function HomePage(): ReactElement {
               in the morning or enjoying a night out, it’s a perfect spot to soak in
               the local vibe.
           </p>
-          <div className="image-placeholder">📸 One Loudoun</div>
+          <div className="about-image">
+            <Image src="/images/things-to-do/one-loudoun.jpg" alt="One Loudoun town center" fill />
+          </div>
           <h3>Explore the Wonders of Flight</h3>
           <p>
             If you’re fascinated by history, technology, or space, the <strong>Steven F.
@@ -118,7 +108,9 @@ export default function HomePage(): ReactElement {
             including the Space Shuttle Discovery. It’s an experience that brings
             aviation and space exploration to life.
           </p>
-          <div className="image-placeholder">📸 Udvar-Hazy Museum photo</div>
+          <div className="about-image">
+            <Image src="/images/things-to-do/udvar.jpg" alt="Steven F. Udvar-Hazy Center" fill />
+          </div>
           <h3>A Gateway to the Nation’s Capital</h3>
           <p>
             Ashburn is also perfectly positioned for day trips into <strong>Washington,
@@ -127,7 +119,9 @@ export default function HomePage(): ReactElement {
             Spend the day sightseeing, then return to Ashburn to unwind in a
             quieter, more relaxed setting.
           </p>
-          <div className="image-placeholder">📸 Washington, D.C. photo</div>
+          <div className="about-image">
+            <Image src="/images/things-to-do/dc.jpg" alt="Washington, D.C. skyline" fill />
+          </div>
           <h3>Nature, Parks, and Local Charm</h3>
           <p>
             If you’re looking to slow down, Ashburn and Loudoun County are home to
