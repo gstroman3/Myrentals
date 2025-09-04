@@ -57,7 +57,7 @@ export default function HomePage(): ReactElement {
       <section id="about" className="alt-section">
           <article className="about-article">
           <h1>Luxe Townhome Retreat</h1>
-          <h3>Hot Tub • Sauna • Loft Fireplace • Near Bles Park and One Loudoun</h3>
+          <h3><center><strong>Hot Tub • Sauna • Loft Fireplace • Near Bles Park and One Loudoun</strong></center></h3>
           <p>
             Welcome to your perfect getaway! This spacious <strong>3-bedroom, 3.5-bath
             townhouse</strong> offers a mix of luxury and comfort just minutes from
@@ -74,7 +74,7 @@ export default function HomePage(): ReactElement {
           </ul>
           <h2>About the Area: Ashburn, Virginia</h2>
           <p>
-            Welcome to Ashburn, Virginia—one of Northern Virginia’s most vibrant
+            Ashburn, Virginia—one of Northern Virginia’s most vibrant
             and convenient destinations. Whether you’re here for a relaxing
             weekend getaway, a family adventure, or a quick trip to explore the
             nation’s capital, Ashburn places you at the center of it all.
