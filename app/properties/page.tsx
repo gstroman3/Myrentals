@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { type ReactElement, useEffect, useState } from 'react';
 import Header from '@/components/Header';
-import ScrollButtons from '@/components/ScrollButtons'
+import ScrollButtons from '@/components/ScrollButtons';
 import SectionSlider from '@/components/SectionSlider';
 import { properties, type RoomImage } from '@/lib/properties';
 
@@ -22,6 +22,14 @@ export default function PropertiesPage(): ReactElement {
         label: room.title,
     }));
 
+    type LightboxImage = RoomImage & { room: string };
+    const allImages: LightboxImage[] = property.rooms.flatMap((room) =>
+        room.images.map((img) => ({ ...img, room: room.title }))
+    );
+
+    const getImageIndex = (src: string): number =>
+        allImages.findIndex((img) => img.src === src);
+
     const [heroIndex, setHeroIndex] = useState(0);
     useEffect(() => {
         const id = setInterval(() => {
@@ -30,12 +38,10 @@ export default function PropertiesPage(): ReactElement {
         return () => clearInterval(id);
     }, []);
 
-    const [lightboxImages, setLightboxImages] = useState<RoomImage[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
 
-    const openLightbox = (images: RoomImage[], index: number) => {
-        setLightboxImages(images);
+    const openLightbox = (index: number) => {
         setCurrentIndex(index);
         setIsOpen(true);
     };
@@ -43,9 +49,9 @@ export default function PropertiesPage(): ReactElement {
     const closeLightbox = () => setIsOpen(false);
 
     const showPrev = () =>
-        setCurrentIndex((i) => (i - 1 + lightboxImages.length) % lightboxImages.length);
+        setCurrentIndex((i) => (i - 1 + allImages.length) % allImages.length);
     const showNext = () =>
-        setCurrentIndex((i) => (i + 1) % lightboxImages.length);
+        setCurrentIndex((i) => (i + 1) % allImages.length);
     return (
         <>
            <Header overlay />
@@ -85,7 +91,7 @@ export default function PropertiesPage(): ReactElement {
                     >
                         <h2>{room.title}</h2>
                         <div className="gallery-grid">
-                            {room.images.map((img, idx) => (
+                            {room.images.map((img) => (
                                 <div key={img.src} className="gallery-item">
                                     <Image
                                         src={img.src}
@@ -93,7 +99,7 @@ export default function PropertiesPage(): ReactElement {
                                         fill
                                         sizes="(max-width: 600px) 100vw, 300px"
                                         style={{ objectFit: 'cover' }}
-                                        onClick={() => openLightbox(room.images, idx)}
+                                        onClick={() => openLightbox(getImageIndex(img.src))}
                                     />
                                 </div>
                             ))}
@@ -106,13 +112,15 @@ export default function PropertiesPage(): ReactElement {
                     <button className="lightbox-nav prev" onClick={(e) => { e.stopPropagation(); showPrev(); }} aria-label="Previous image">
                         &#10094;
                     </button>
-                    <Image
-                        src={lightboxImages[currentIndex].src}
-                        alt={lightboxImages[currentIndex].alt}
-                        width={1200}
-                        height={800}
-                        onClick={(e) => e.stopPropagation()}
-                    />
+                    <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+                        <Image
+                            src={allImages[currentIndex].src}
+                            alt={allImages[currentIndex].alt}
+                            width={1200}
+                            height={800}
+                        />
+                        <div className="lightbox-caption">{allImages[currentIndex].room}</div>
+                    </div>
                     <button className="lightbox-nav next" onClick={(e) => { e.stopPropagation(); showNext(); }} aria-label="Next image">
                         &#10095;
                     </button>

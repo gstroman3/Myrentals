@@ -16,6 +16,7 @@ export default function SectionSlider({ sections }: SectionSliderProps) {
   const [active, setActive] = useState(0);
   const [labelIndex, setLabelIndex] = useState<number | null>(null);
   const labelTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const touching = useRef(false);
 
   const showLabel = (index: number, persist = false) => {
     if (labelTimeout.current) {
@@ -28,17 +29,17 @@ export default function SectionSlider({ sections }: SectionSliderProps) {
     }
   };
 
-  const scrollTo = (index: number) => {
+  const scrollTo = (index: number, persist = false) => {
     const id = sections[index]?.id;
     if (id) {
       document
         .getElementById(id)
         ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      showLabel(index);
+      showLabel(index, persist);
     }
   };
 
-  const handleTouch = (clientY: number) => {
+  const handleTouch = (clientY: number, persist = false) => {
     const slider = sliderRef.current;
     if (!slider) return;
     const rect = slider.getBoundingClientRect();
@@ -47,7 +48,7 @@ export default function SectionSlider({ sections }: SectionSliderProps) {
       sections.length - 1,
       Math.max(0, Math.round(ratio * (sections.length - 1)))
     );
-    scrollTo(index);
+    scrollTo(index, persist);
   };
 
   useEffect(() => {
@@ -77,8 +78,17 @@ export default function SectionSlider({ sections }: SectionSliderProps) {
     <div
       ref={sliderRef}
       className="section-slider"
-      onTouchStart={(e) => handleTouch(e.touches[0].clientY)}
-      onTouchMove={(e) => handleTouch(e.touches[0].clientY)}
+      onTouchStart={(e) => {
+        touching.current = true;
+        handleTouch(e.touches[0].clientY, true);
+      }}
+      onTouchMove={(e) => {
+        if (touching.current) handleTouch(e.touches[0].clientY, true);
+      }}
+      onTouchEnd={() => {
+        touching.current = false;
+        setLabelIndex(null);
+      }}
     >
       {sections.map((s, i) => (
         <div
