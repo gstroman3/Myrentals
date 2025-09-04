@@ -114,6 +114,30 @@ section.alt-section p {
   color: var(--color-primary);
 }
 
+.about-article {
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.75;
+}
+
+section.alt-section .about-article h2,
+section.alt-section .about-article h3 {
+  font-family: 'Libertinus Serif Display', system-ui;
+}
+
+.image-placeholder {
+  width: 100%;
+  height: 200px;
+  background: var(--color-section-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  font-style: italic;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+}
+
 h1, h2, h3 {
   color: #FFF;
 }
