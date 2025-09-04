@@ -118,7 +118,7 @@ export const properties: Property[] = [
         title: 'Front of House',
         images: [
           { src: '/images/front-house/front-center.jpg', alt: 'Front 1' },
-          { src: '/images/front-house/front-right.jpg', alt: 'Front 2' },
+          { src: '/images/front-house/front-right.jpeg', alt: 'Front 2' },
         ],
       },
       {
