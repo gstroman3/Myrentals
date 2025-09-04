@@ -7,9 +7,11 @@ import SectionSlider from '@/components/SectionSlider';
 import { properties, type RoomImage } from '@/lib/properties';
 
 const heroSlides = [
-    '/images/backyard/IMG_0201.jpg',
+    '/images/loft/IMG_1755.jpg',
     '/images/living-room/IMG_0190.jpg',
     '/images/loft/IMG_1751.jpg',
+    '/images/master-bed/IMG_1746.jpg',
+    '/images/sauna/IMG_0195.jpg',
 ];
 
 export default function PropertiesPage(): ReactElement {
