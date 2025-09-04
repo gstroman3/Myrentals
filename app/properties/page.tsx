@@ -62,6 +62,16 @@ export default function PropertiesPage(): ReactElement {
                 <div className="content">
                     <h1>Luxe Townhome</h1>
                     <p>Ashburn, VA</p>
+                    <div className="details">
+                        <span> {property.guests} guests</span>
+                        <span>&bull;</span>
+                        <span>{property.bedrooms} bedrooms</span>
+                        <span>&bull;</span>
+                        <span>{property.beds} beds</span>
+                        <span>&bull;</span>
+                        <span>{property.bathrooms} baths</span>
+
+                    </div>
                 </div>
             </section>
             <section className="gallery-page">

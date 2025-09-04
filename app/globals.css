@@ -205,6 +205,18 @@ button:hover,
   overflow: hidden;
 }
 
+.landing-hero h1 {
+  font-family: "Libertinus Serif Display", system-ui;
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.landing-hero p {
+  font-family: "Quicksand", sans-serif;
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+
 .landing-hero .background {
   position: absolute;
   inset: 0;
@@ -299,6 +311,12 @@ button:hover,
   margin-bottom: 1rem;
 }
 
+.gallery-hero p {
+  font-family: "Quicksand", sans-serif;
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+
 .gallery-hero .background {
   position: absolute;
   inset: 0;
@@ -327,6 +345,19 @@ button:hover,
 
 .gallery-hero .content {
   padding: 0 2rem;
+}
+
+.gallery-hero .details {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.gallery-hero .details span {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .gallery-page {
