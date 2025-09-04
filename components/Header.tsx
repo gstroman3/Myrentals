@@ -22,9 +22,9 @@ export default function Header({ overlay = false }: HeaderProps): ReactElement {
           />
         </Link>
         <div className="nav-links">
-          <Link href="#">About</Link>
+          <Link href="/#about">About</Link>
           <Link href="/properties">Gallery</Link>
-          <Link href="#">Neighborhood</Link>
+          <Link href="#">Book</Link>
         </div>
       </nav>
     </header>

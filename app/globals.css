@@ -12,6 +12,10 @@
   --color-text-secondary: #4B5563; /* Medium Gray */
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -92,7 +96,22 @@ section {
 }
 
 section.alt-section {
-  background: var(--color-section-bg);
+  background: var(--color-bg-light);
+}
+
+section.alt-section h1 {
+  color: var(--color-primary);
+  font-family: 'Quicksand', sans-serif;
+  text-align: center;
+}
+
+section.alt-section h2, section.alt-section h3 {
+  color: var(--color-primary);
+  font-family: 'Quicksand', sans-serif;
+}
+
+section.alt-section p {
+  color: var(--color-primary);
 }
 
 h1, h2, h3 {
