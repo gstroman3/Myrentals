@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import type { ReactElement } from 'react';
 import Header from '@/components/Header';
+import ScrollButtons from '@/components/ScrollButtons';
 
 const slides = [
   '/images/kitchen/IMG_0186.jpg',
@@ -33,6 +34,7 @@ export default function HomePage(): ReactElement {
   return (
     <>
       <Header overlay />
+      <ScrollButtons />
       <section className="landing-hero">
         <div className="background">
           {slides.map((src, i) => (
@@ -50,8 +52,8 @@ export default function HomePage(): ReactElement {
           <h1>Luxe Townhome Retreat</h1>
           <p>Your comfortable stay in Ashburn, VA</p>
           <div className="actions">
-            <Link href="/properties/#" className="btn">Book Now</Link>
-            <Link href="/properties/#" className="btn secondary">View Availability</Link>
+            <Link href="/" className="btn">Book Now</Link>
+            <Link href="/" className="btn secondary">Contact</Link>
           </div>
         </div>
       </section>
