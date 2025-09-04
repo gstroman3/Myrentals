@@ -40,8 +40,8 @@ export default function HomePage(): ReactElement {
           ))}
         </div>
         <div className="content">
-          <h1>Easy Rent your Rentals</h1>
-          <p>Experience luxury stays made simple.</p>
+          <h1>Luxe Townhome Retreat</h1>
+          <p>Your comfortable stay in Ashburn, VA</p>
           <div className="actions">
             <Link href="/properties/#" className="btn">Book Now</Link>
             <Link href="/properties/#" className="btn secondary">View Availability</Link>

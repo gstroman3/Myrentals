@@ -14,6 +14,10 @@ export type Property = {
   location: string;
   hero: RoomImage;
   rooms: Room[];
+  guests: number;
+  bedrooms: number;
+  beds: number;
+  bathrooms: number;
 };
 
 export const properties: Property[] = [
@@ -22,6 +26,10 @@ export const properties: Property[] = [
     title: 'Ashburn Estate',
     location: 'Ashburn, VA',
     hero: { src: '/images/backyard/IMG_0198.jpg', alt: 'Luxury home exterior' },
+    guests: 10,
+    bedrooms: 3,
+    beds: 4,
+    bathrooms: 3.5,
     rooms: [
       {
         title: 'Kitchen',
