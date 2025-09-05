@@ -116,8 +116,10 @@ export default function PropertiesPage(): ReactElement {
                         <Image
                             src={allImages[currentIndex].src}
                             alt={allImages[currentIndex].alt}
-                            width={1200}
-                            height={800}
+                            width={0}
+                            height={0}
+                            sizes="90vw"
+                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                         />
                         <div className="lightbox-caption">{allImages[currentIndex].room}</div>
                     </div>

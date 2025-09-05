@@ -60,7 +60,9 @@ export default function SectionSlider({ sections }: SectionSliderProps) {
         ([entry]) => {
           if (entry.isIntersecting) {
             setActive(index);
-            showLabel(index);
+            if (!window.matchMedia('(max-width: 768px)').matches) {
+              showLabel(index);
+            }
           }
         },
         { rootMargin: '-50% 0px -50% 0px' }
