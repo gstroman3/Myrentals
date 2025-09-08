@@ -642,3 +642,52 @@ button:hover,
   font-size: 0.75rem;
   pointer-events: none;
 }
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal {
+  background: var(--color-bg-light);
+  color: var(--color-text-primary);
+  padding: 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: center;
+}
+
+.modal-logo {
+  margin: 0 auto;
+}
+
+.close-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--color-text-primary);
+}
+
+.name-fields {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.name-fields input {
+  flex: 1;
+}
+
