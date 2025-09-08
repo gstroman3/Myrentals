@@ -76,14 +76,24 @@ nav.main-nav {
   right: 0;
   bottom: 0;
   display: flex;
-  justify-content: center;
-  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
   padding: 0.75rem 1rem;
   background: var(--color-bg-light);
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
   z-index: 20;
   transform: translateY(100%);
   transition: transform 0.3s ease;
+}
+
+.scroll-buttons .actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.scroll-buttons .price {
+  color: var(--color-primary);
+  font-weight: 600;
 }
 
 .scroll-buttons.visible {
