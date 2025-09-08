@@ -679,6 +679,22 @@ button:hover,
   color: var(--color-text-primary);
 }
 
+.modal form {
+  width: 100%;
+  max-width: none;
+}
+
+.modal a.btn,
+.modal button {
+  width: 100%;
+}
+
+.modal input,
+.modal textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .name-fields {
   display: flex;
   gap: 0.5rem;
@@ -686,5 +702,11 @@ button:hover,
 
 .name-fields input {
   flex: 1;
+}
+
+@media (max-width: 480px) {
+  .name-fields {
+    flex-direction: column;
+  }
 }
 
