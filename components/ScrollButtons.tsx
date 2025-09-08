@@ -4,7 +4,13 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { ReactElement } from 'react';
 
-export default function ScrollButtons(): ReactElement | null {
+interface ScrollButtonsProps {
+  onContact?: () => void;
+}
+
+export default function ScrollButtons({
+  onContact,
+}: ScrollButtonsProps): ReactElement | null {
   const [visible, setVisible] = useState(false);
   const [enabled, setEnabled] = useState(false);
 
@@ -44,9 +50,9 @@ export default function ScrollButtons(): ReactElement | null {
         <Link href="/properties/#" className="btn">
           Book
         </Link>
-        <Link href="/#contact" className="btn outline">
+        <button className="btn outline" onClick={onContact}>
           Contact
-        </Link>
+        </button>
       </div>
     </div>
   );
