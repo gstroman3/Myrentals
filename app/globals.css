@@ -76,7 +76,8 @@ nav.main-nav {
   bottom: 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 1rem;
   padding: 0.75rem 1rem;
   background: var(--color-bg-light);
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
@@ -107,8 +108,7 @@ body.has-scroll-buttons {
 
 @media (min-width: 768px) {
   .scroll-buttons {
-    justify-content: center;
-    gap: 3rem;
+    justify-content: space-between;
   }
 }
 
