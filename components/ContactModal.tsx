@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import Image from 'next/image';
 
 interface ContactModalProps {
@@ -16,6 +16,11 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
     subject: '',
     body: '',
   });
+  const [view, setView] = useState<'options' | 'email'>('options');
+
+  useEffect(() => {
+    if (open) setView('options');
+  }, [open]);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -44,52 +49,65 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
           height={40}
           className="modal-logo"
         />
-        <a href="tel:7039948444" className="btn call-btn">
-          Call
-        </a>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="email"
-            placeholder="Email"
-            required
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-          />
-          <div className="name-fields">
+        {view === 'options' ? (
+          <>
+            <button className="btn" onClick={() => setView('email')}>
+              Email
+            </button>
+            <p className="or-text">--OR--</p>
+            <a
+              href="tel:7039948444"
+              className="btn call-btn"
+              onClick={onClose}
+            >
+              Call
+            </a>
+          </>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <input
+              type="email"
+              placeholder="Email"
+              required
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+            />
+            <div className="name-fields">
+              <input
+                type="text"
+                placeholder="First Name"
+                required
+                value={form.firstName}
+                onChange={(e) =>
+                  setForm({ ...form, firstName: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Last Name"
+                required
+                value={form.lastName}
+                onChange={(e) =>
+                  setForm({ ...form, lastName: e.target.value })
+                }
+              />
+            </div>
             <input
               type="text"
-              placeholder="First Name"
+              placeholder="Subject"
               required
-              value={form.firstName}
-              onChange={(e) =>
-                setForm({ ...form, firstName: e.target.value })
-              }
+              value={form.subject}
+              onChange={(e) => setForm({ ...form, subject: e.target.value })}
             />
-            <input
-              type="text"
-              placeholder="Last Name"
+            <textarea
+              placeholder="Body"
               required
-              value={form.lastName}
-              onChange={(e) =>
-                setForm({ ...form, lastName: e.target.value })
-              }
+              value={form.body}
+              onChange={(e) => setForm({ ...form, body: e.target.value })}
             />
-          </div>
-          <input
-            type="text"
-            placeholder="Subject"
-            required
-            value={form.subject}
-            onChange={(e) => setForm({ ...form, subject: e.target.value })}
-          />
-          <textarea
-            placeholder="Body"
-            required
-            value={form.body}
-            onChange={(e) => setForm({ ...form, body: e.target.value })}
-          />
-          <button type="submit">Send Email</button>
-        </form>
+            <button type="submit">Send Email</button>
+          </form>
+        )}
       </div>
     </div>
   );
