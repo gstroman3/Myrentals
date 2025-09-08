@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useState, FormEvent } from 'react';
 import Header from '@/components/Header';
 import SectionSlider from '@/components/SectionSlider';
+import ContactModal from '@/components/ContactModal';
 import type { Property } from '@/lib/properties';
 
 interface PropertyDetailClientProps {
@@ -11,13 +12,8 @@ interface PropertyDetailClientProps {
 }
 
 export default function PropertyDetailClient({ property }: PropertyDetailClientProps) {
-  const [contact, setContact] = useState({ name: '', email: '', message: '' });
+  const [contactOpen, setContactOpen] = useState(false);
   const [booking, setBooking] = useState({ checkIn: '', checkOut: '' });
-
-  const handleContactSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    alert('Contact request submitted');
-  };
 
   const handleBookingSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,7 +27,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
         <div className="text">
           <p className="eyebrow">{property.location}</p>
           <h1>{property.title}</h1>
-          <LinkButtons />
+          <LinkButtons onContact={() => setContactOpen(true)} />
         </div>
         <div className="hero-image">
           <Image
@@ -62,32 +58,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
         ))}
       </section>
 
-      <section id="contact">
-        <h2>Contact the Host</h2>
-        <form onSubmit={handleContactSubmit}>
-          <input
-            type="text"
-            placeholder="Name"
-            required
-            value={contact.name}
-            onChange={(e) => setContact({ ...contact, name: e.target.value })}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            required
-            value={contact.email}
-            onChange={(e) => setContact({ ...contact, email: e.target.value })}
-          />
-          <textarea
-            placeholder="Message"
-            required
-            value={contact.message}
-            onChange={(e) => setContact({ ...contact, message: e.target.value })}
-          />
-          <button type="submit">Send</button>
-        </form>
-      </section>
+      <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
 
       <section id="book">
         <h2>Book This Property</h2>
@@ -117,20 +88,19 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
         sections={[
           { id: 'hero', label: 'Overview' },
           { id: 'gallery', label: 'Gallery' },
-          { id: 'contact', label: 'Contact' },
-          { id: 'book', label: 'Book' },
+          { id: 'book', label: 'Book' }
         ]}
       />
     </>
   );
 }
 
-function LinkButtons() {
+function LinkButtons({ onContact }: { onContact: () => void }) {
   return (
     <div className="nav-links">
-      <a href="#contact" className="btn">
+      <button className="btn" onClick={onContact}>
         Contact
-      </a>
+      </button>
       <a href="#book" className="btn">
         Book Now
       </a>
