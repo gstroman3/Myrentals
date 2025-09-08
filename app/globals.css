@@ -241,6 +241,19 @@ button:hover,
   border-color: var(--color-secondary);
 }
 
+.call-btn {
+  background: #34c759;
+}
+
+.call-btn:hover {
+  background: #4cd964;
+}
+
+.or-text {
+  text-align: center;
+  margin: 0.5rem 0;
+}
+
 .card {
   background: #fff;
   border: 1px solid #ddd;
