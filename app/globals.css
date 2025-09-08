@@ -688,6 +688,7 @@ button:hover,
 .modal button:not(.close-btn) {
   width: 100%;
   display: block;
+  box-sizing: border-box;
 }
 
 .modal input,
