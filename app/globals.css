@@ -685,8 +685,9 @@ button:hover,
 }
 
 .modal a.btn,
-.modal button {
+.modal button:not(.close-btn) {
   width: 100%;
+  display: block;
 }
 
 .modal input,
