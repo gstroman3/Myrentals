@@ -39,12 +39,15 @@ export default function ScrollButtons(): ReactElement | null {
 
   return (
     <div className={`scroll-buttons${visible ? ' visible' : ''}`}>
-      <Link href="/properties/#" className="btn">
-        Book
-      </Link>
-      <Link href="/#contact" className="btn outline">
-        Contact
-      </Link>
+      <span className="price">$315/night</span>
+      <div className="actions">
+        <Link href="/properties/#" className="btn">
+          Book
+        </Link>
+        <Link href="/#contact" className="btn outline">
+          Contact
+        </Link>
+      </div>
     </div>
   );
 }
