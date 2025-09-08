@@ -670,6 +670,7 @@ button:hover,
   border-radius: 8px;
   width: 90%;
   max-width: 500px;
+  box-sizing: border-box;
   position: relative;
   display: flex;
   flex-direction: column;
