@@ -72,8 +72,7 @@ nav.main-nav {
 /* Scroll-activated bottom buttons */
 .scroll-buttons {
   position: fixed;
-  left: 0;
-  right: 0;
+  left: 50%;
   bottom: 0;
   display: flex;
   align-items: center;
@@ -82,7 +81,9 @@ nav.main-nav {
   background: var(--color-bg-light);
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
   z-index: 20;
-  transform: translateY(100%);
+  width: 100%;
+  max-width: var(--layout-max-width);
+  transform: translate(-50%, 100%);
   transition: transform 0.3s ease;
 }
 
@@ -97,11 +98,18 @@ nav.main-nav {
 }
 
 .scroll-buttons.visible {
-  transform: translateY(0);
+  transform: translate(-50%, 0);
 }
 
 body.has-scroll-buttons {
   padding-bottom: 4.5rem;
+}
+
+@media (min-width: 768px) {
+  .scroll-buttons {
+    justify-content: center;
+    gap: 1.5rem;
+  }
 }
 
 @media (max-width: 600px) {
