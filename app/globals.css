@@ -21,7 +21,7 @@ body {
     margin: 0;
     font-family: Arial, sans-serif;
     background: var(--color-bg-light);
-    color: var(--color-text-primary);
+    color: var(--col-primary);
 }
 
 nav.main-nav {
@@ -252,6 +252,7 @@ button:hover,
 .or-text {
   text-align: center;
   margin: 0.5rem 0;
+  color: var(--color-primary);
 }
 
 .card {
