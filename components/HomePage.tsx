@@ -7,6 +7,7 @@ import type { ReactElement } from 'react';
 import Header from '@/components/Header';
 import ScrollButtons from '@/components/ScrollButtons';
 import ContactModal from '@/components/ContactModal';
+import { properties } from '@/lib/properties';
 
 const slides = [
   '/images/kitchen/IMG_0186.jpg',
@@ -19,6 +20,7 @@ const slides = [
 export default function HomePage(): ReactElement {
   const [index, setIndex] = useState(0);
   const [contactOpen, setContactOpen] = useState(false);
+  const slug = properties[0].slug;
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -36,7 +38,7 @@ export default function HomePage(): ReactElement {
   return (
     <>
       <Header overlay />
-      <ScrollButtons onContact={() => setContactOpen(true)} />
+      <ScrollButtons onContact={() => setContactOpen(true)} slug={slug} />
       <section className="landing-hero">
         <div className="background">
           {slides.map((src, i) => (
@@ -54,7 +56,7 @@ export default function HomePage(): ReactElement {
           <h1>Luxe Townhome Retreat</h1>
           <p>Your comfortable stay in Ashburn, VA</p>
           <div className="actions">
-            <Link href="/" className="btn">Book Now</Link>
+            <Link href={`/properties/${slug}/book`} className="btn">Book Now</Link>
             <button
               className="btn secondary"
               onClick={() => setContactOpen(true)}

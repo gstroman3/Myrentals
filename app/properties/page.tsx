@@ -55,7 +55,7 @@ export default function PropertiesPage(): ReactElement {
     return (
         <>
            <Header overlay />
-           <ScrollButtons />
+           <ScrollButtons slug={property.slug} />
             <section className="gallery-hero">
                 <div className="background">
                     {heroSlides.map((src, i) => (

@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState, FormEvent } from 'react';
 import Header from '@/components/Header';
 import SectionSlider from '@/components/SectionSlider';
@@ -27,7 +28,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
         <div className="text">
           <p className="eyebrow">{property.location}</p>
           <h1>{property.title}</h1>
-          <LinkButtons onContact={() => setContactOpen(true)} />
+          <LinkButtons onContact={() => setContactOpen(true)} slug={property.slug} />
         </div>
         <div className="hero-image">
           <Image
@@ -95,15 +96,15 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
   );
 }
 
-function LinkButtons({ onContact }: { onContact: () => void }) {
+function LinkButtons({ onContact, slug }: { onContact: () => void; slug: string }) {
   return (
     <div className="nav-links">
       <button className="btn" onClick={onContact}>
         Contact
       </button>
-      <a href="#book" className="btn">
+      <Link href={`/properties/${slug}/book`} className="btn">
         Book Now
-      </a>
+      </Link>
     </div>
   );
 }
