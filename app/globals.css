@@ -11,6 +11,10 @@
   --color-text-primary: #033b88; /* Neutral Gray-Black */
   --color-text-secondary: #4B5563; /* Medium Gray */
   --layout-max-width: 1200px;
+  --available: #ffffff;
+  --booked: #ffe0e0;
+  --owner: #fff4d6;
+  --brand: var(--color-accent);
 }
 
 html {
@@ -725,4 +729,67 @@ button:hover,
     flex-direction: column;
   }
 }
+
+/* Availability calendar */
+.availability-calendar {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.availability-calendar .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.availability-calendar .header button {
+  background: none;
+  border: 1px solid var(--brand);
+  color: var(--brand);
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+}
+
+.availability-calendar .grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+}
+
+.availability-calendar .day-name {
+  text-align: center;
+  font-weight: 600;
+}
+
+.availability-calendar .day {
+  aspect-ratio: 1/1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+}
+
+.availability-calendar .day.available {
+  background: var(--available);
+}
+
+.availability-calendar .day.booked {
+  background: var(--booked);
+}
+
+.availability-calendar .day.owner {
+  background: var(--owner);
+}
+
+.availability-calendar .day[aria-disabled="true"] {
+  opacity: 0.6;
+}
+
+@media (min-width: 600px) {
+  .availability-calendar {
+    max-width: 600px;
+  }
+}
+
 
