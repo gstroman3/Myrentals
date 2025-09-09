@@ -3,21 +3,32 @@ import { normalizeICS } from '@/components/utils/tzNormalize';
 import { coalesce } from '@/components/utils/coalesce';
 import { getBlackouts } from './ownerBlackouts';
 import type { AvailabilityFeed, DateRange, ISODate } from '@/components/types';
+import { getPropertyBySlug } from './properties';
 
-const PROPERTY_CONFIG: Record<string, { timezone: string; icsUrls: string[]; minNights?: number }> = {
-  // Hardcode for now; TODO: load from Supabase later
-  'beach-cottage-1': {
+// Hardcode for now; TODO: load from Supabase later
+const PROPERTY_CONFIG: Record<string, { timezone: string; icsUrls?: string[]; minNights?: number }> = {
+  'ashburn-estate': {
     timezone: 'America/New_York',
-    icsUrls: ['<PASTE_CLIENT_ICS_URL_HERE>'],
     minNights: 2,
   },
 };
 
 export async function getAvailability(args: { propertyId: string; start?: ISODate; end?: ISODate }): Promise<AvailabilityFeed> {
-  const cfg = PROPERTY_CONFIG[args.propertyId] ?? { timezone: 'America/New_York', icsUrls: [] };
+  const cfg = PROPERTY_CONFIG[args.propertyId] ?? { timezone: 'America/New_York' };
+  const urls: string[] = [];
+
+  if (cfg.icsUrls) {
+    urls.push(...cfg.icsUrls);
+  }
+
+  const property = getPropertyBySlug(args.propertyId);
+  if (property?.icalUrl) {
+    urls.push(property.icalUrl);
+  }
+
   const allImported: DateRange[] = [];
 
-  for (const url of cfg.icsUrls) {
+  for (const url of urls) {
     try {
       const ics = await fetchICS(url);
       const raw = parseICS(ics);
