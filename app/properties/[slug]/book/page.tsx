@@ -1,40 +1,17 @@
-import { notFound } from 'next/navigation';
-import Header from '@/components/Header';
-import { AvailabilityCalendar } from '@/components/AvailabilityCalendar';
-import defaultAvailability from '@/lib/availability.json';
-import { getPropertyBySlug, properties } from '@/lib/properties';
-import { fetchAvailabilityFromIcal } from '@/lib/airbnb';
-import type { AvailabilityData } from '@/lib/availability';
+import AvailabilityCalendar from '@/components/AvailabilityCalendar';
+import { getAvailability } from '@/lib/availabilityApi';
 
-export default async function BookPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  const property = getPropertyBySlug(slug);
-  if (!property) return notFound();
-
-  let availability: AvailabilityData = defaultAvailability;
-  if (property.icalUrl) {
-    try {
-      availability = await fetchAvailabilityFromIcal(property.icalUrl, property.slug);
-    } catch (err) {
-      console.error('Failed to fetch iCal availability', err);
-    }
-  }
-
+export default function Page({ params }: { params: { slug: string } }) {
+  const propertyId = params.slug; // keep simple for now
   return (
     <>
-      <Header logo="transparent" contact />
-      <section className="book-page">
-        <h1>Book {property.title}</h1>
-        <AvailabilityCalendar data={availability} />
-      </section>
+      <h1>Availability for {propertyId}</h1>
+      <AvailabilityCalendar
+        propertyId={propertyId}
+        timezone="America/New_York"
+        fetchAvailability={getAvailability}
+        showOwnerPanel={false} // set true temporarily to test blackouts
+      />
     </>
   );
-}
-
-export function generateStaticParams() {
-  return properties.map(({ slug }) => ({ slug }));
 }
