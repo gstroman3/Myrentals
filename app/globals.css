@@ -203,6 +203,17 @@ p, label {
   color: #FFF;
 }
 
+/* Booking page */
+.book-page {
+  max-width: var(--layout-max-width);
+  margin: 0 auto;
+}
+
+.book-page h1 {
+  color: var(--color-primary);
+  text-align: center;
+}
+
 .gallery {
   display: flex;
   flex-wrap: wrap;
