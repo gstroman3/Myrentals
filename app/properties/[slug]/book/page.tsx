@@ -14,7 +14,7 @@ export default async function BookPage({
   if (!property) return notFound();
   return (
     <>
-      <Header />
+      <Header logo="transparent" contact />
       <section className="book-page">
         <h1>Book {property.title}</h1>
         <AvailabilityCalendar data={availability} />
