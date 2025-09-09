@@ -66,11 +66,21 @@ nav.main-nav {
   font-weight: 550;
 }
 
-.main-nav .nav-links a {
+.nav-links button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.main-nav .nav-links a,
+.main-nav .nav-links button {
   color: var(--color-text-primary);
 }
 
-.main-nav .nav-links a:hover {
+.main-nav .nav-links a:hover,
+.main-nav .nav-links button:hover {
   color: var(--color-accent);
 }
 
@@ -387,17 +397,20 @@ button:hover,
   border: none;
 }
 
-.header-overlay .nav-links a:hover{
+.header-overlay .nav-links a:hover,
+.header-overlay .nav-links button:hover{
     color: #fff;
 }
 
-.header-overlay .nav-links a {
+.header-overlay .nav-links a,
+.header-overlay .nav-links button {
   color: #fff;
   position: relative;
   text-decoration: none;
 }
 
-.header-overlay .nav-links a::after {
+.header-overlay .nav-links a::after,
+.header-overlay .nav-links button::after {
     content: '';
     position: absolute;
     left: 0;
@@ -408,7 +421,8 @@ button:hover,
     transition: width 0.3s ease;
 }
 
-.header-overlay .nav-links a:hover::after {
+.header-overlay .nav-links a:hover::after,
+.header-overlay .nav-links button:hover::after {
   width: 100%; /* Full width underline on hover */
 }
 
