@@ -24,7 +24,7 @@ export default function Header({ overlay = false }: HeaderProps): ReactElement {
         <div className="nav-links">
           <Link href="/#about">About</Link>
           <Link href="/properties">Gallery</Link>
-          <Link href="#">Book</Link>
+          <Link href="/properties/ashburn-estate/book">Book</Link>
         </div>
       </nav>
     </header>

@@ -6,10 +6,12 @@ import type { ReactElement } from 'react';
 
 interface ScrollButtonsProps {
   onContact?: () => void;
+  slug: string;
 }
 
 export default function ScrollButtons({
   onContact,
+  slug,
 }: ScrollButtonsProps): ReactElement | null {
   const [visible, setVisible] = useState(false);
   const [enabled, setEnabled] = useState(false);
@@ -47,7 +49,7 @@ export default function ScrollButtons({
     <div className={`scroll-buttons${visible ? ' visible' : ''}`}>
       <span className="price">$315/night</span>
       <div className="actions">
-        <Link href="/properties/#" className="btn">
+        <Link href={`/properties/${slug}/book`} className="btn">
           Book
         </Link>
         <button className="btn outline" onClick={onContact}>
