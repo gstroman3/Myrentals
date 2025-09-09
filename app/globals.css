@@ -11,10 +11,11 @@
   --color-text-primary: #033b88; /* Neutral Gray-Black */
   --color-text-secondary: #4B5563; /* Medium Gray */
   --layout-max-width: 1200px;
-  --available: #ffffff;
-  --booked: #ffe0e0;
-  --owner: #fff4d6;
   --brand: var(--color-accent);
+  --available-bg: #ffffff;
+  --booked-bg: #ffe0e0;
+  --blackout-bg: #fff4d6;
+  --grid-border: #ddd;
 }
 
 html {
@@ -767,7 +768,7 @@ button:hover,
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
-  background: var(--color-primary);
+  background: var(--brand);
   /* increase vertical space without affecting width */
   padding: clamp(0.75rem, 3vw, 1.5rem) 0;
 }
@@ -826,18 +827,19 @@ button:hover,
   align-items: center;
   justify-content: center;
   font-size: 0.875rem;
+  border: 1px solid var(--grid-border);
 }
 
 .availability-calendar .day.available {
-  background: var(--available);
+  background: var(--available-bg);
 }
 
 .availability-calendar .day.booked {
-  background: var(--booked);
+  background: var(--booked-bg);
 }
 
-.availability-calendar .day.owner {
-  background: var(--owner);
+.availability-calendar .day.blackout {
+  background: var(--blackout-bg);
 }
 
 .availability-calendar .day[aria-disabled="true"] {
