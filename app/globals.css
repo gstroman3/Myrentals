@@ -761,12 +761,15 @@ button:hover,
   margin: 0 auto;
 }
 
+/* Calendar header styling */
 .availability-calendar .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
   background: var(--color-primary);
+  /* increase vertical space without affecting width */
+  padding: clamp(0.75rem, 3vw, 1.5rem) 0;
 }
 
 .availability-calendar .header button {
@@ -789,16 +792,21 @@ button:hover,
   color: var(--color-bg-light);
   padding: 0;
   margin: 0 0.25rem;
-  font-size: 1.5rem;
+  /* larger text for month/year while keeping dropdown options smaller */
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
   font-weight: 600;
   cursor: pointer;
-  appearance: none;
+  /* restore native dropdown arrow */
+  appearance: auto;
   outline: none;
+  line-height: 1;
 }
 
 .availability-calendar .header select option {
   color: var(--color-primary);
   background: var(--color-bg-light);
+  /* keep dropdown option text at normal size */
+  font-size: 1rem;
 }
 
 .availability-calendar .grid {
