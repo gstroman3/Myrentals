@@ -18,6 +18,7 @@ export type Property = {
   bedrooms: number;
   beds: number;
   bathrooms: number;
+  icalUrl?: string;
 };
 
 export const properties: Property[] = [
@@ -26,6 +27,7 @@ export const properties: Property[] = [
     title: 'Ashburn Estate',
     location: 'Ashburn, VA',
     hero: { src: '/images/front-house/front-right.jpg', alt: 'Luxury home exterior' },
+    icalUrl: 'https://www.airbnb.com/calendar/ical/54023802.ics?s=7ed74f559aa0cf7c1c71d979b3e046bf',
     guests: 10,
     bedrooms: 3,
     beds: 4,

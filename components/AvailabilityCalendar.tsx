@@ -2,19 +2,7 @@
 
 import { useState } from 'react';
 import type { ReactElement } from 'react';
-
-export interface DateRange {
-  start: string;
-  end: string;
-  reason?: string;
-}
-
-export interface AvailabilityData {
-  property_id: string;
-  booked: DateRange[];
-  blackouts: DateRange[];
-  min_nights: number;
-}
+import type { AvailabilityData, DateRange } from '@/lib/availability';
 
 export interface AvailabilityCalendarProps {
   data: AvailabilityData;
