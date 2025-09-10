@@ -1,5 +1,11 @@
-import { parse, format, startOfDay, addDays } from 'date-fns';
-import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
+import {
+  parse,
+  format,
+  startOfDay,
+  addDays,
+  utcToZonedTime,
+  zonedTimeToUtc,
+} from '../../lib/date';
 import type { DateRange, ICSRawEvent } from '../types';
 
 function parseDate(value: string, tz: string): Date {
