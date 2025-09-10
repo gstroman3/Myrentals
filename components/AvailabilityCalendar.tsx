@@ -3,8 +3,14 @@
 import { useState, useEffect, ChangeEvent, useCallback } from 'react';
 import type { AvailabilityFeed, DateRange } from './types';
 import OwnerBlackoutsPanel from './OwnerBlackoutsPanel';
-import { formatInTimeZone, utcToZonedTime } from 'date-fns-tz';
-import { startOfMonth, addMonths, getDaysInMonth, addDays } from 'date-fns';
+import {
+  formatInTimeZone,
+  utcToZonedTime,
+  startOfMonth,
+  addMonths,
+  getDaysInMonth,
+  addDays,
+} from '../lib/date';
 
 export type Props = {
   propertyId: string;
