@@ -1,8 +1,12 @@
 import AvailabilityCalendar from '@/components/AvailabilityCalendar';
 import { getAvailability } from '@/lib/availabilityApi';
 
-export default function Page({ params }: { params: { slug: string } }) {
-  const propertyId = params.slug; // keep simple for now
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug: propertyId } = await params; // keep simple for now
   return (
     <>
       <h1>Availability for {propertyId}</h1>
