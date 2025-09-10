@@ -10,11 +10,11 @@ import type { DateRange, ICSRawEvent } from '../types';
 
 function parseDate(value: string, tz: string): Date {
   if (/^\d{8}$/.test(value)) {
-    const naive = parse(value, 'yyyyMMdd', new Date());
+    const naive = parse(value, 'yyyyMMdd');
     return zonedTimeToUtc(naive, tz);
   }
   // handles Z or offset via X token
-  return parse(value, "yyyyMMdd'T'HHmmssX", new Date());
+  return parse(value, "yyyyMMdd'T'HHmmssX");
 }
 
 export function normalizeICS(e: ICSRawEvent, tz: string): DateRange {
