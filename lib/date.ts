@@ -46,7 +46,7 @@ export function zonedTimeToUtc(date: Date, timeZone: string): Date {
   return new Date(date.getTime() - diff);
 }
 
-export function parse(value: string, fmt: string, _ref: Date): Date {
+export function parse(value: string, fmt: string): Date {
   if (fmt === 'yyyyMMdd') {
     const year = Number(value.slice(0, 4));
     const month = Number(value.slice(4, 6)) - 1;
