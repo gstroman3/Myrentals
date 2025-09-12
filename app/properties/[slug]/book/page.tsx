@@ -3,7 +3,8 @@ import { properties } from '@/lib/properties';
 
 interface BookPageProps {
   params: Promise<{ slug: string }>;
-  
+}
+
 export default async function Page({ params }: BookPageProps) {
   const { slug: propertyId } = await params;
   return (
