@@ -2,15 +2,11 @@ import AvailabilityCalendar from '@/components/AvailabilityCalendar';
 import { properties } from '@/lib/properties';
 
 interface BookPageProps {
-  params: Promise<{ slug: string }>;
-  /**
-   * @deprecated searchParams are unused for booking pages.
-   */
-  searchParams?: Promise<Record<string, string | string[]>>;
+  params: { slug: string };
 }
 
-export default async function Page({ params }: BookPageProps) {
-  const { slug: propertyId } = await params; // keep simple for now
+export default function Page({ params }: BookPageProps) {
+  const { slug: propertyId } = params;
   return (
     <>
       <h1>Availability for {propertyId}</h1>
