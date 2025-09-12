@@ -2,11 +2,11 @@ import AvailabilityCalendar from '@/components/AvailabilityCalendar';
 import { properties } from '@/lib/properties';
 
 interface BookPageProps {
-  params: { slug: string };
-}
+  params: Promise<{ slug: string }>;
+  }
 
-export default function Page({ params }: BookPageProps) {
-  const { slug: propertyId } = params;
+export default async function Page({ params }: BookPageProps) {
+  const { slug: propertyId } = await params;
   return (
     <>
       <h1>Availability for {propertyId}</h1>
