@@ -4,7 +4,7 @@ import { getPropertyBySlug, properties } from '@/lib/properties';
 
 interface PropertyDetailProps {
   params: Promise<{ slug: string }>;
- }
+}
 
 export default async function PropertyDetail({ params }: PropertyDetailProps) {
   const { slug } = await params;
