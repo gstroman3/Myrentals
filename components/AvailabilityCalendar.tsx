@@ -11,11 +11,16 @@ import {
   getDaysInMonth,
   addDays,
 } from '../lib/date';
+import { getAvailability } from '@/lib/availabilityApi';
 
 export type Props = {
   propertyId: string;
   timezone: string;
-  fetchAvailability: (args: { propertyId: string; start?: string; end?: string }) => Promise<AvailabilityFeed>;
+  fetchAvailability?: (args: {
+    propertyId: string;
+    start?: string;
+    end?: string;
+  }) => Promise<AvailabilityFeed>;
   showOwnerPanel?: boolean; // default false
 };
 
@@ -23,7 +28,12 @@ function inRanges(iso: string, ranges: DateRange[]): boolean {
   return ranges.some((r) => r.start <= iso && iso < r.end);
 }
 
-export default function AvailabilityCalendar({ propertyId, timezone, fetchAvailability, showOwnerPanel = false }: Props) {
+export default function AvailabilityCalendar({
+  propertyId,
+  timezone,
+  fetchAvailability = getAvailability,
+  showOwnerPanel = false,
+}: Props) {
   const [month, setMonth] = useState(() => utcToZonedTime(new Date(), timezone));
   const [feed, setFeed] = useState<AvailabilityFeed>({ property_id: propertyId, booked: [], blackouts: [], min_nights: 1 });
 

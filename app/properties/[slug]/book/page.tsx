@@ -1,5 +1,5 @@
 import AvailabilityCalendar from '@/components/AvailabilityCalendar';
-import { getAvailability } from '@/lib/availabilityApi';
+import { properties } from '@/lib/properties';
 
 interface BookPageProps {
   params: Promise<{ slug: string }>;
@@ -17,9 +17,12 @@ export default async function Page({ params }: BookPageProps) {
       <AvailabilityCalendar
         propertyId={propertyId}
         timezone="America/New_York"
-        fetchAvailability={getAvailability}
         showOwnerPanel={false} // set true temporarily to test blackouts
       />
     </>
   );
+}
+
+export function generateStaticParams() {
+  return properties.map(({ slug }) => ({ slug }));
 }
