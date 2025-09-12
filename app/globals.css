@@ -8,7 +8,7 @@
   --color-secondary: #60A5FA; /* Soft Blue */
   --color-bg-light: #F8FAFC; /* Blue-tinted white */
   --color-section-bg: #E0F2FE; /* Pale Blue */
-  --color-text-primary: #033b88; /* Neutral Gray-Black */
+  --color-text-primary: var(--color-primary); /* Match body text to primary */
   --color-text-secondary: #4B5563; /* Medium Gray */
   --layout-max-width: 1200px;
   --brand: var(--color-accent);

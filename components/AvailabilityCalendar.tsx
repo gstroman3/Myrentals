@@ -11,7 +11,6 @@ import {
   getDaysInMonth,
   addDays,
 } from '../lib/date';
-import { getAvailability } from '@/lib/availabilityApi';
 
 export type Props = {
   propertyId: string;
@@ -31,7 +30,16 @@ function inRanges(iso: string, ranges: DateRange[]): boolean {
 export default function AvailabilityCalendar({
   propertyId,
   timezone,
-  fetchAvailability = getAvailability,
+  fetchAvailability = async ({ propertyId, start, end }) => {
+    const params = new URLSearchParams({ propertyId });
+    if (start) params.set('start', start);
+    if (end) params.set('end', end);
+    const res = await fetch(`/api/availability?${params.toString()}`);
+    if (!res.ok) {
+      throw new Error('Failed to load availability');
+    }
+    return res.json();
+  },
   showOwnerPanel = false,
 }: Props) {
   const [month, setMonth] = useState(() => utcToZonedTime(new Date(), timezone));
