@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getAvailability } from '@/lib/availabilityApi';
 
-export const dynamic = 'force-static';
+// This route reads query parameters at request time, so it must be rendered
+// dynamically rather than statically during the build.
+export const dynamic = 'force-dynamic';
 export const revalidate = 3600; // regenerate every hour
 
 export async function GET(req: Request) {
