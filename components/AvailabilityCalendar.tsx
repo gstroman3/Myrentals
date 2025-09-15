@@ -11,7 +11,7 @@ export interface AvailabilityCalendarProps {
 function inRange(date: Date, range: DateRange): boolean {
   const start = new Date(range.start);
   const end = new Date(range.end);
-  return date >= start && date <= end;
+  return date >= start && date < end;
 }
 
 export function AvailabilityCalendar({ data }: AvailabilityCalendarProps): ReactElement {
