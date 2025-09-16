@@ -20,7 +20,32 @@ export async function fetchAvailabilityFromIcal(
     const body = match[1];
     const start = /DTSTART(?:;VALUE=DATE)?:(\d{8})/i.exec(body);
     const end = /DTEND(?:;VALUE=DATE)?:(\d{8})/i.exec(body);
-    if (start && end) {
+    const summaryMatch = /SUMMARY(?:;[^:]+)*:(.*)/i.exec(body);
+    const summary = summaryMatch ? summaryMatch[1].trim() : '';
+    const normalizedSummary = summary.toLowerCase();
+    const collapsedSummary = normalizedSummary.replace(/[\s_-]+/g, '');
+    const containsNotAvailable =
+      /not[\s_-]*available/.test(normalizedSummary) || normalizedSummary.includes('unavailable');
+    const containsOwnerIndicator =
+      collapsedSummary.includes('owner') && !collapsedSummary.includes('ownerless');
+    const containsBlockedIndicator =
+      normalizedSummary.includes('blocked') && !normalizedSummary.includes('unblocked');
+    const startsWithBlock =
+      /^block(\b|[^a-z])/.test(normalizedSummary) ||
+      collapsedSummary.startsWith('blockout') ||
+      collapsedSummary.startsWith('blockoff');
+    const containsCalendarBlock =
+      collapsedSummary.includes('calendarblock') ||
+      collapsedSummary.includes('blockcalendar') ||
+      collapsedSummary.includes('calendarhold');
+    const isOwnerBlock =
+      summary.length > 0 &&
+      (containsNotAvailable ||
+        containsOwnerIndicator ||
+        containsBlockedIndicator ||
+        startsWithBlock ||
+        containsCalendarBlock);
+    if (start && end && !isOwnerBlock) {
       booked.push({ start: formatDate(start[1]), end: formatDate(end[1]) });
     }
   }
