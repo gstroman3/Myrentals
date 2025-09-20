@@ -43,7 +43,7 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
           &times;
         </button>
         <Image
-          src="/images/logo_white.png"
+          src="/images/logo_transparent.png"
           alt="Stroman Properties logo"
           width={160}
           height={40}
