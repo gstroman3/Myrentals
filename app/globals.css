@@ -275,6 +275,7 @@ button:hover,
 }
 
 .or-text {
+  color: var(--color-primary);
   text-align: center;
   margin: 0.5rem 0;
 }
