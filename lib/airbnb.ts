@@ -8,7 +8,7 @@ export async function fetchAvailabilityFromIcal(
   url: string,
   propertyId: string,
 ): Promise<AvailabilityData> {
-  const res = await fetch(url);
+  const res = await fetch(url, { cache: 'no-store' });
   if (!res.ok) {
     throw new Error(`Failed to fetch iCal: ${res.status}`);
   }
