@@ -2,16 +2,16 @@ import { notFound } from 'next/navigation';
 import Header from '@/components/Header';
 import { AvailabilityCalendar } from '@/components/AvailabilityCalendar';
 import defaultAvailability from '@/lib/availability.json';
-import { getPropertyBySlug, properties } from '@/lib/properties';
+import { getPropertyBySlug } from '@/lib/properties';
 import { fetchAvailabilityFromIcal } from '@/lib/airbnb';
 import type { AvailabilityData } from '@/lib/availability';
 
 export default async function BookPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
-  const { slug } = await params;
+  const { slug } = params;
   const property = getPropertyBySlug(slug);
   if (!property) return notFound();
 
@@ -33,8 +33,4 @@ export default async function BookPage({
       </section>
     </>
   );
-}
-
-export function generateStaticParams() {
-  return properties.map(({ slug }) => ({ slug }));
 }
