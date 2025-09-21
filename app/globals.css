@@ -726,6 +726,9 @@ button:hover,
 .modal form {
   width: 100%;
   max-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .modal a.btn,
@@ -733,12 +736,23 @@ button:hover,
   width: 100%;
   display: block;
   box-sizing: border-box;
+  padding: 0.85rem 1rem;
+  font-size: 1.05rem;
 }
 
 .modal input,
 .modal textarea {
   width: 100%;
   box-sizing: border-box;
+  padding: 0.85rem 1rem;
+  font-size: 1.05rem;
+  border: 1px solid rgba(3, 59, 136, 0.3);
+  border-radius: 6px;
+}
+
+.modal textarea {
+  min-height: 8rem;
+  resize: vertical;
 }
 
 .name-fields {
