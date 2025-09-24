@@ -38,7 +38,9 @@ export default function Header({
           <Link href="/#about">About</Link>
           <Link href="/properties">Gallery</Link>
           {contact ? (
-            <button onClick={() => setContactOpen(true)}>Contact</button>
+            <button type="button" onClick={() => setContactOpen(true)}>
+              Contact
+            </button>
           ) : (
             <Link href="/properties/ashburn-estate/book">Book</Link>
           )}
