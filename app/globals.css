@@ -14,6 +14,8 @@
   --available: #ffffff;
   --booked: #ffe0e0;
   --owner: #fff4d6;
+  --internal-confirmed: #d1fae5;
+  --internal-blocked: #e5e7eb;
   --brand: var(--color-accent);
 }
 
@@ -853,6 +855,42 @@ button:hover,
 
 .availability-calendar .day.owner {
   background: var(--owner);
+}
+
+.availability-calendar .day.external {
+  background: var(--booked);
+}
+
+.availability-calendar .day.pending {
+  background: var(--owner);
+}
+
+.availability-calendar .day.confirmed {
+  background: var(--internal-confirmed);
+}
+
+.availability-calendar .day.blocked {
+  background: var(--internal-blocked);
+}
+
+.availability-calendar .availability-error {
+  grid-column: 1 / -1;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  background: var(--booked);
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.availability-calendar .availability-loading {
+  grid-column: 1 / -1;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  background: var(--owner);
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.9rem;
 }
 
 .availability-calendar .day[aria-disabled="true"] {
