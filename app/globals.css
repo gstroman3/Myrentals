@@ -299,6 +299,10 @@ p, label {
   gap: 0.75rem;
 }
 
+.pricing-breakdown h3 {
+  color: var(--color-primary);
+}
+
 .pricing-breakdown li {
   display: flex;
   justify-content: space-between;
@@ -326,6 +330,7 @@ p, label {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  color: var(--color-primary);
 }
 
 .booking-form label,
