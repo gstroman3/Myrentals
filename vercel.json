@@ -1,0 +1,9 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/airbnb-sync",
+      "schedule": "*/5 * * * *",
+      "headers": { "x-cron-secret": "${CRON_SECRET}" }
+    }
+  ]
+}

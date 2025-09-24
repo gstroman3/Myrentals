@@ -1,4 +1,12 @@
-import { fetchAirbnbCalendarBlocks, insertCalendarBlocks, updateCalendarBlock, updateCalendarBlocks, deleteCalendarBlocks, type CalendarBlockRecord } from '@/lib/calendarBlocks';
+// scripts/lib/airbnbCalendar.ts (or keep your current path; this file is imported by scripts/ingest-airbnb-ics.ts)
+import {
+  fetchAirbnbCalendarBlocks,
+  insertCalendarBlocks,
+  updateCalendarBlock,
+  updateCalendarBlocks,
+  deleteCalendarBlocks,
+  type CalendarBlockRecord,
+} from '../lib/calendarBlocks'; // ← switched to relative import
 
 interface ParsedEvent {
   uid: string;
@@ -18,9 +26,7 @@ function unfoldLines(ics: string): string[] {
   for (const line of rawLines) {
     if (!line) continue;
     if (line.startsWith(' ') || line.startsWith('\t')) {
-      if (lines.length === 0) {
-        continue;
-      }
+      if (lines.length === 0) continue;
       lines[lines.length - 1] += line.slice(1);
     } else {
       lines.push(line.trim());
@@ -48,9 +54,7 @@ function extractEvents(lines: string[]): RawEvent[] {
 }
 
 function formatDateOnly(value: string): string {
-  if (!/^\d{8}$/.test(value)) {
-    throw new Error(`Invalid date value: ${value}`);
-  }
+  if (!/^\d{8}$/.test(value)) throw new Error(`Invalid date value: ${value}`);
   return `${value.slice(0, 4)}-${value.slice(4, 6)}-${value.slice(6, 8)}`;
 }
 
@@ -65,26 +69,19 @@ function formatDateInTimeZone(date: Date, timeZone: string): string {
   const year = parts.find((p) => p.type === 'year')?.value;
   const month = parts.find((p) => p.type === 'month')?.value;
   const day = parts.find((p) => p.type === 'day')?.value;
-  if (!year || !month || !day) {
-    throw new Error('Failed to format date in timezone');
-  }
+  if (!year || !month || !day) throw new Error('Failed to format date in timezone');
   return `${year}-${month}-${day}`;
 }
 
 function normalizeDateTime(value: string, timezone: string): string {
-  if (/^\d{8}$/.test(value)) {
-    return formatDateOnly(value);
-  }
+  if (/^\d{8}$/.test(value)) return formatDateOnly(value);
+
   let working = value;
-  if (/^\d{8}T\d{6}$/.test(working)) {
-    working = `${working}Z`;
-  }
+  if (/^\d{8}T\d{6}$/.test(working)) working = `${working}Z`;
   if (/^\d{8}T\d{6}Z$/.test(working)) {
     const iso = `${working.slice(0, 4)}-${working.slice(4, 6)}-${working.slice(6, 8)}T${working.slice(9, 11)}:${working.slice(11, 13)}:${working.slice(13, 15)}Z`;
     const date = new Date(iso);
-    if (Number.isNaN(date.getTime())) {
-      throw new Error(`Invalid date-time value: ${value}`);
-    }
+    if (Number.isNaN(date.getTime())) throw new Error(`Invalid date-time value: ${value}`);
     return formatDateInTimeZone(date, timezone);
   }
   throw new Error(`Unsupported date value: ${value}`);
@@ -100,9 +97,7 @@ function parsePropertyLine(line: string): { name: string; params: Record<string,
   const params: Record<string, string> = {};
   for (let i = 1; i < parts.length; i += 1) {
     const [key, val] = parts[i].split('=');
-    if (key && val) {
-      params[key.toUpperCase()] = val;
-    }
+    if (key && val) params[key.toUpperCase()] = val;
   }
   return { name: name.toUpperCase(), params, value };
 }
@@ -119,47 +114,33 @@ function parseEvent(raw: RawEvent, timezone: string): ParsedEvent | null {
       uid = value.trim();
     } else if (name === 'DTSTART') {
       try {
-        if (params.VALUE === DATE_ONLY_VALUE) {
-          start = formatDateOnly(value.trim());
-        } else {
-          start = normalizeDateTime(value.trim(), timezone);
-        }
+        start = params.VALUE === DATE_ONLY_VALUE ? formatDateOnly(value.trim()) : normalizeDateTime(value.trim(), timezone);
       } catch (error) {
         console.error('Failed to parse DTSTART', error);
         return null;
       }
     } else if (name === 'DTEND') {
       try {
-        if (params.VALUE === DATE_ONLY_VALUE) {
-          end = formatDateOnly(value.trim());
-        } else {
-          end = normalizeDateTime(value.trim(), timezone);
-        }
+        end = params.VALUE === DATE_ONLY_VALUE ? formatDateOnly(value.trim()) : normalizeDateTime(value.trim(), timezone);
       } catch (error) {
         console.error('Failed to parse DTEND', error);
         return null;
       }
     }
   }
-  if (!uid || !start || !end) {
-    return null;
-  }
+  if (!uid || !start || !end) return null;
   return { uid, startDate: start, endDate: end };
 }
 
 export async function fetchAirbnbEventsFromIcs(): Promise<ParsedEvent[]> {
   const url = process.env.AIRBNB_ICS_URL;
-  if (!url) {
-    throw new Error('AIRBNB_ICS_URL is not set');
-  }
+  if (!url) throw new Error('AIRBNB_ICS_URL is not set');
   const timezone = process.env.PROPERTY_TIMEZONE;
-  if (!timezone) {
-    throw new Error('PROPERTY_TIMEZONE is not set');
-  }
+  if (!timezone) throw new Error('PROPERTY_TIMEZONE is not set');
+
   const response = await fetch(url, { cache: 'no-store' });
-  if (!response.ok) {
-    throw new Error(`Failed to download Airbnb calendar (${response.status})`);
-  }
+  if (!response.ok) throw new Error(`Failed to download Airbnb calendar (${response.status})`);
+
   const ics = await response.text();
   const lines = unfoldLines(ics);
   const events = extractEvents(lines)
@@ -187,9 +168,7 @@ export async function syncAirbnbCalendar(options: SyncOptions = {}): Promise<Syn
 
   const existingByUid = new Map<string, CalendarBlockRecord>();
   for (const record of existing) {
-    if (record.external_ref) {
-      existingByUid.set(record.external_ref, record);
-    }
+    if (record.external_ref) existingByUid.set(record.external_ref, record);
   }
 
   const toInsert: {
@@ -217,7 +196,6 @@ export async function syncAirbnbCalendar(options: SyncOptions = {}): Promise<Syn
       });
       continue;
     }
-
     matchedIds.add(match.id);
     if (match.start_date !== event.startDate || match.end_date !== event.endDate) {
       toUpdate.push({ id: match.id, start_date: event.startDate, end_date: event.endDate });
@@ -226,7 +204,7 @@ export async function syncAirbnbCalendar(options: SyncOptions = {}): Promise<Syn
     }
   }
 
-  await insertCalendarBlocks(toInsert);
+  if (toInsert.length) await insertCalendarBlocks(toInsert);
 
   for (const update of toUpdate) {
     await updateCalendarBlock(update.id, {
@@ -243,7 +221,12 @@ export async function syncAirbnbCalendar(options: SyncOptions = {}): Promise<Syn
   let deleted = 0;
   if (options.deleteMissing) {
     const toDelete = existing
-      .filter((record) => record.external_ref && !matchedIds.has(record.id))
+      .filter(
+        (record) =>
+          record.source === 'airbnb_ics' && // ← only delete Airbnb-sourced rows
+          record.external_ref &&
+          !matchedIds.has(record.id)
+      )
       .map((record) => record.id);
     if (toDelete.length) {
       await deleteCalendarBlocks(toDelete);
@@ -263,21 +246,20 @@ export async function ingestAirbnbCalendar(): Promise<{ inserted: number; update
   const events = await fetchAirbnbEventsFromIcs();
   const existing = await fetchAirbnbCalendarBlocks();
   const now = new Date().toISOString();
+
   const existingByUid = new Map<string, CalendarBlockRecord>();
   for (const record of existing) {
-    if (record.external_ref) {
-      existingByUid.set(record.external_ref, record);
-    }
+    if (record.external_ref) existingByUid.set(record.external_ref, record);
   }
 
-  const insertPayload = [] as {
+  const insertPayload: {
     source: string;
     status: string;
     start_date: string;
     end_date: string;
     external_ref: string;
     last_sync_at: string;
-  }[];
+  }[] = [];
   const updates: { id: string; start_date: string; end_date: string }[] = [];
   let skipped = 0;
 
@@ -299,7 +281,8 @@ export async function ingestAirbnbCalendar(): Promise<{ inserted: number; update
     }
   }
 
-  await insertCalendarBlocks(insertPayload);
+  if (insertPayload.length) await insertCalendarBlocks(insertPayload);
+
   for (const update of updates) {
     await updateCalendarBlock(update.id, {
       start_date: update.start_date,
@@ -310,12 +293,18 @@ export async function ingestAirbnbCalendar(): Promise<{ inserted: number; update
 
   if (skipped > 0) {
     const skippedIds = existing
-      .filter((record) =>
-        record.external_ref && events.some((event) => event.uid === record.external_ref && record.start_date === event.startDate && record.end_date === event.endDate),
+      .filter(
+        (record) =>
+          record.external_ref &&
+          events.some(
+            (event) => event.uid === record.external_ref && record.start_date === event.startDate && record.end_date === event.endDate
+          )
       )
       .map((record) => record.id);
     const uniqueSkippedIds = Array.from(new Set(skippedIds));
-    await updateCalendarBlocks(uniqueSkippedIds, { last_sync_at: now });
+    if (uniqueSkippedIds.length) {
+      await updateCalendarBlocks(uniqueSkippedIds, { last_sync_at: now });
+    }
   }
 
   return {
@@ -324,4 +313,3 @@ export async function ingestAirbnbCalendar(): Promise<{ inserted: number; update
     skipped,
   };
 }
-

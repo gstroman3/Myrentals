@@ -35,11 +35,19 @@ export interface SupabaseRequestOptions extends RequestInit {
 
 export async function supabaseRequest(path: string, options: SupabaseRequestOptions = {}) {
   const baseUrl = getSupabaseBaseUrl();
-  const url = new URL(path.startsWith('/') ? path : `/${path}`, `${baseUrl}${REST_API_PATH}`);
+  const base = `${baseUrl}${REST_API_PATH}`.replace(/\/+$/, ''); // .../rest/v1
+  const cleanPath = path.replace(/^\/+/, '');                    // remove leading '/'
+  const url = `${base}/${cleanPath}`;                           // .../rest/v1/calendar_blocks?...
+
   const { json, ...init } = options;
   const body = json !== undefined ? JSON.stringify(json) : options.body;
   const headers = buildHeaders(init.headers, body !== undefined && body !== null);
-  const response = await fetch(url.toString(), {
+
+  if (process.env.DEBUG_SUPABASE_REST === '1') {
+    console.log('[SUPABASE REST]', url);
+  }
+
+  const response = await fetch(url, {
     cache: 'no-store',
     ...init,
     body,
@@ -47,6 +55,7 @@ export async function supabaseRequest(path: string, options: SupabaseRequestOpti
   });
   return response;
 }
+
 
 export async function supabaseJson<T>(path: string, options: SupabaseRequestOptions = {}): Promise<T> {
   const response = await supabaseRequest(path, options);
