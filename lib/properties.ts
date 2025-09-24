@@ -18,6 +18,9 @@ export type Property = {
   bedrooms: number;
   beds: number;
   bathrooms: number;
+  nightlyRate: number;
+  cleaningFee: number;
+  taxRate: number;
   icalUrl?: string;
 };
 
@@ -32,6 +35,9 @@ export const properties: Property[] = [
     bedrooms: 3,
     beds: 4,
     bathrooms: 3.5,
+    nightlyRate: 315,
+    cleaningFee: 200,
+    taxRate: 0.1,
     rooms: [
       {
         title: 'Kitchen',
