@@ -1,18 +1,14 @@
 import { notFound } from 'next/navigation';
 import PropertyDetailClient from './PropertyDetailClient';
-import { getPropertyBySlug, properties } from '@/lib/properties';
+import { getPropertyBySlug } from '@/lib/properties';
 
-export default async function PropertyDetail({
+export default function PropertyDetail({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
-  const { slug } = await params;
+  const { slug } = params;
   const property = getPropertyBySlug(slug);
   if (!property) return notFound();
   return <PropertyDetailClient property={property} />;
-}
-
-export function generateStaticParams() {
-  return properties.map(({ slug }) => ({ slug }));
 }

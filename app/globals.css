@@ -14,6 +14,8 @@
   --available: #ffffff;
   --booked: #ffe0e0;
   --owner: #fff4d6;
+  --internal-confirmed: #d1fae5;
+  --internal-blocked: #e5e7eb;
   --brand: var(--color-accent);
 }
 
@@ -68,10 +70,24 @@ nav.main-nav {
 
 .nav-links button {
   background: none;
+  background-color: transparent;
   border: none;
   color: inherit;
   cursor: pointer;
   padding: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-links button:focus {
+  background: transparent;
+}
+
+.nav-links button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
 }
 
 .main-nav .nav-links a,
@@ -207,11 +223,211 @@ p, label {
 .book-page {
   max-width: var(--layout-max-width);
   margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.book-page .booking-heading {
+  text-align: center;
 }
 
 .book-page h1 {
   color: var(--color-primary);
-  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.book-page .booking-heading p {
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.booking-layout {
+  display: grid;
+  gap: 2rem;
+  align-items: start;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 900px) {
+  .booking-layout {
+    grid-template-columns: 1.4fr 1fr;
+  }
+}
+
+.booking-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.booking-sidebar .card {
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(3, 59, 136, 0.08);
+  border: none;
+}
+
+.booking-summary h2 {
+  color: var(--color-primary);
+}
+
+.booking-summary dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 1rem;
+  margin: 0;
+}
+
+.booking-summary dt {
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.booking-summary dd {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.pricing-breakdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.pricing-breakdown h3 {
+  color: var(--color-primary);
+}
+
+.pricing-breakdown li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+}
+
+.pricing-breakdown li strong {
+  color: var(--color-primary);
+}
+
+.pricing-breakdown li.total {
+  border-top: 1px solid rgba(3, 59, 136, 0.1);
+  padding-top: 0.75rem;
+  font-size: 1.05rem;
+}
+
+.pricing-breakdown .estimate-note {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.booking-form h3 {
+  color: var(--color-primary);
+}
+
+.booking-form label,
+.booking-form fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+}
+
+.booking-form input {
+  border: 1px solid rgba(3, 59, 136, 0.3);
+  border-radius: 8px;
+  padding: 0.65rem 0.75rem;
+  font-size: 1rem;
+}
+
+.booking-form fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.payment-methods legend {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.payment-option input {
+  accent-color: var(--color-primary);
+}
+
+.form-warning,
+.form-error {
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+}
+
+.form-warning {
+  background: #fff4d6;
+  color: #7a5700;
+}
+
+.form-error {
+  background: #ffe0e0;
+  color: #8a1f1f;
+}
+
+.booking-form button {
+  padding: 0.85rem 1rem;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 999px;
+}
+
+.booking-form button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.booking-form .hold-disclaimer {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.hold-next-steps p {
+  margin-top: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.hold-next-steps strong {
+  color: var(--color-primary);
+}
+
+.hold-next-steps .payment-memo {
+  font-family: 'Courier New', monospace;
+  background: rgba(59, 130, 246, 0.1);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+}
+
+.hold-next-steps .proof-note,
+.hold-next-steps .hold-window-note {
+  font-size: 0.85rem;
 }
 
 .gallery {
@@ -275,6 +491,7 @@ button:hover,
 }
 
 .or-text {
+  color: var(--color-primary);
   text-align: center;
   margin: 0.5rem 0;
 }
@@ -725,6 +942,9 @@ button:hover,
 .modal form {
   width: 100%;
   max-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .modal a.btn,
@@ -732,12 +952,23 @@ button:hover,
   width: 100%;
   display: block;
   box-sizing: border-box;
+  padding: 0.85rem 1rem;
+  font-size: 1.05rem;
 }
 
 .modal input,
 .modal textarea {
   width: 100%;
   box-sizing: border-box;
+  padding: 0.85rem 1rem;
+  font-size: 1.05rem;
+  border: 1px solid rgba(3, 59, 136, 0.3);
+  border-radius: 6px;
+}
+
+.modal textarea {
+  min-height: 8rem;
+  resize: vertical;
 }
 
 .name-fields {
@@ -826,6 +1057,8 @@ button:hover,
   align-items: center;
   justify-content: center;
   font-size: 0.875rem;
+  border-radius: 8px;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .availability-calendar .day.available {
@@ -838,6 +1071,80 @@ button:hover,
 
 .availability-calendar .day.owner {
   background: var(--owner);
+}
+
+.availability-calendar .day.external {
+  background: var(--booked);
+}
+
+.availability-calendar .day.pending {
+  background: var(--owner);
+}
+
+.availability-calendar .day.confirmed {
+  background: var(--internal-confirmed);
+}
+
+.availability-calendar .day.blocked {
+  background: var(--internal-blocked);
+}
+
+.availability-calendar .day.interactive {
+  cursor: pointer;
+  border: 1px solid rgba(3, 59, 136, 0.1);
+}
+
+.availability-calendar .day.interactive:hover,
+.availability-calendar .day.interactive:focus-visible {
+  outline: none;
+  background: rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+.availability-calendar .day.selected,
+.availability-calendar .day.in-range {
+  background: rgba(59, 130, 246, 0.25);
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.availability-calendar .day.selected-start,
+.availability-calendar .day.selected-end {
+  background: rgba(59, 130, 246, 0.45);
+}
+
+.availability-calendar .day.range-conflict {
+  background: rgba(239, 68, 68, 0.25);
+  color: #8a1f1f;
+}
+
+.availability-calendar .availability-error {
+  grid-column: 1 / -1;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  background: var(--booked);
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.availability-calendar .availability-selection-error {
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #fff4d6;
+  color: #7a5700;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.availability-calendar .availability-loading {
+  grid-column: 1 / -1;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  background: var(--owner);
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.9rem;
 }
 
 .availability-calendar .day[aria-disabled="true"] {

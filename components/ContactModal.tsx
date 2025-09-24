@@ -43,7 +43,7 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
           &times;
         </button>
         <Image
-          src="/images/logo_white.png"
+          src="/images/logo_transparent.png"
           alt="Stroman Properties logo"
           width={160}
           height={40}
@@ -56,7 +56,7 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
             </button>
             <p className="or-text">--OR--</p>
             <a
-              href="tel:7039948444"
+              href="tel:5719198268"
               className="btn call-btn"
               onClick={onClose}
             >

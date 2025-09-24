@@ -1,40 +1,33 @@
 import { notFound } from 'next/navigation';
 import Header from '@/components/Header';
-import { AvailabilityCalendar } from '@/components/AvailabilityCalendar';
-import defaultAvailability from '@/lib/availability.json';
-import { getPropertyBySlug, properties } from '@/lib/properties';
-import { fetchAvailabilityFromIcal } from '@/lib/airbnb';
-import type { AvailabilityData } from '@/lib/availability';
+import { getPropertyBySlug } from '@/lib/properties';
+import BookingClient from './BookingClient';
 
 export default async function BookPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
-  const { slug } = await params;
+  const { slug } = params;
   const property = getPropertyBySlug(slug);
   if (!property) return notFound();
-
-  let availability: AvailabilityData = defaultAvailability;
-  if (property.icalUrl) {
-    try {
-      availability = await fetchAvailabilityFromIcal(property.icalUrl, property.slug);
-    } catch (err) {
-      console.error('Failed to fetch iCal availability', err);
-    }
-  }
+  const propertyTimezone = process.env.PROPERTY_TIMEZONE ?? 'UTC';
+  const holdWindowHours = Number(process.env.HOLD_WINDOW_HOURS ?? '24');
 
   return (
     <>
       <Header logo="transparent" contact />
       <section className="book-page">
-        <h1>Book {property.title}</h1>
-        <AvailabilityCalendar data={availability} />
+        <div className="booking-heading">
+          <h1>Book {property.title}</h1>
+          <p>Select your travel dates, review the estimate, and start a 24-hour hold.</p>
+        </div>
+        <BookingClient
+          property={property}
+          propertyTimezone={propertyTimezone}
+          holdWindowHours={holdWindowHours}
+        />
       </section>
     </>
   );
-}
-
-export function generateStaticParams() {
-  return properties.map(({ slug }) => ({ slug }));
 }
