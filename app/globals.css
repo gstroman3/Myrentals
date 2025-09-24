@@ -330,6 +330,9 @@ p, label {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.booking-form h3 {
   color: var(--color-primary);
 }
 
