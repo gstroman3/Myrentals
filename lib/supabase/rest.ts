@@ -1,6 +1,6 @@
 const REST_API_PATH = '/rest/v1';
 
-function getSupabaseBaseUrl(): string {
+export function getSupabaseBaseUrl(): string {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   if (!url) {
     throw new Error('NEXT_PUBLIC_SUPABASE_URL is not set');
@@ -8,7 +8,7 @@ function getSupabaseBaseUrl(): string {
   return url.endsWith('/') ? url.slice(0, -1) : url;
 }
 
-function getServiceRoleKey(): string {
+export function getServiceRoleKey(): string {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!key) {
     throw new Error('SUPABASE_SERVICE_ROLE_KEY is not set');
