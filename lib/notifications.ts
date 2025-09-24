@@ -13,10 +13,10 @@ function getResendConfig() {
   return { apiKey, to, from };
 }
 
-export async function sendFailureNotification(options: NotifyOptions): Promise<void> {
+async function sendNotification(options: NotifyOptions, context: string): Promise<void> {
   const config = getResendConfig();
   if (!config) {
-    logger.debug('Skipping failure notification because email config is missing');
+    logger.debug(`Skipping ${context} notification because email config is missing`);
     return;
   }
   try {
@@ -38,7 +38,15 @@ export async function sendFailureNotification(options: NotifyOptions): Promise<v
       throw new Error(`Resend request failed (${response.status}): ${text}`);
     }
   } catch (error) {
-    logger.error('Failed to send failure notification', error);
+    logger.error(`Failed to send ${context} notification`, error);
   }
+}
+
+export async function sendFailureNotification(options: NotifyOptions): Promise<void> {
+  await sendNotification(options, 'failure');
+}
+
+export async function sendOwnerNotification(options: NotifyOptions): Promise<void> {
+  await sendNotification(options, 'owner');
 }
 
