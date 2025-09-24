@@ -1,21 +1,83 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { ReactElement, ChangeEvent } from 'react';
-import type { AvailabilityData, DateRange } from '@/lib/availability';
 
-export interface AvailabilityCalendarProps {
-  data: AvailabilityData;
+type CalendarBlock = {
+  id: string;
+  source: string;
+  status: string;
+  start_date: string;
+  end_date: string;
+};
+
+interface DayState {
+  blocked: boolean;
+  className: string;
 }
 
-function inRange(date: Date, range: DateRange): boolean {
-  const start = new Date(range.start);
-  const end = new Date(range.end);
-  return date >= start && date < end;
+function toUtcDateValue(date: Date): number {
+  return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
-export function AvailabilityCalendar({ data }: AvailabilityCalendarProps): ReactElement {
+function parseDateValue(value: string): number {
+  const [year, month, day] = value.split('-').map(Number);
+  return Date.UTC(year, month - 1, day);
+}
+
+function classifyBlock(block: CalendarBlock | undefined): DayState {
+  if (!block) {
+    return { blocked: false, className: 'available' };
+  }
+  if (block.source === 'airbnb_ics') {
+    return { blocked: true, className: 'external' };
+  }
+  if (block.status === 'internal_pending') {
+    return { blocked: true, className: 'pending' };
+  }
+  if (block.status === 'internal_confirmed') {
+    return { blocked: true, className: 'confirmed' };
+  }
+  return { blocked: true, className: 'blocked' };
+}
+
+export function AvailabilityCalendar(): ReactElement {
   const [month, setMonth] = useState(new Date());
+  const [blocks, setBlocks] = useState<CalendarBlock[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    const load = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('/api/availability', { cache: 'no-store' });
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+        const payload = (await response.json()) as CalendarBlock[];
+        if (isMounted) {
+          setBlocks(payload);
+          setError(null);
+        }
+      } catch (err) {
+        console.error('Failed to load availability', err);
+        if (isMounted) {
+          setError('Unable to load availability. Please try again later.');
+          setBlocks([]);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+    void load();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const monthNames = Array.from({ length: 12 }, (_, i) =>
     new Date(0, i).toLocaleString('default', { month: 'long' })
@@ -30,8 +92,14 @@ export function AvailabilityCalendar({ data }: AvailabilityCalendarProps): React
     days.push(new Date(month.getFullYear(), month.getMonth(), i));
   }
 
-  const isBooked = (date: Date) => data.booked.some((r) => inRange(date, r));
-  const isOwner = (date: Date) => data.blackouts.some((r) => inRange(date, r));
+  const findBlockForDate = (date: Date) => {
+    const value = toUtcDateValue(date);
+    return blocks.find((block) => {
+      const start = parseDateValue(block.start_date);
+      const end = parseDateValue(block.end_date);
+      return value >= start && value < end;
+    });
+  };
 
   const prevMonth = () =>
     setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1));
@@ -72,7 +140,17 @@ export function AvailabilityCalendar({ data }: AvailabilityCalendarProps): React
         </div>
         <button onClick={nextMonth} aria-label="Next Month">&gt;</button>
       </div>
-      <div className="grid" role="grid">
+      {isLoading && !error ? (
+        <div role="status" className="availability-loading">
+          Loading availability…
+        </div>
+      ) : null}
+      {error ? (
+        <div role="alert" className="availability-error">
+          {error}
+        </div>
+      ) : null}
+      <div className="grid" role="grid" aria-busy={isLoading}>
         {['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map((d) => (
           <div key={d} className="day-name">
             {d}
@@ -82,15 +160,14 @@ export function AvailabilityCalendar({ data }: AvailabilityCalendarProps): React
           <div key={`empty-${i}`} className="empty" />
         ))}
         {days.map((date) => {
-          const booked = isBooked(date);
-          const owner = isOwner(date);
-          const cls = owner ? 'owner' : booked ? 'booked' : 'available';
+          const block = findBlockForDate(date);
+          const dayState = classifyBlock(block);
           return (
             <div
               key={date.toISOString()}
               role="gridcell"
-              aria-disabled={booked || owner}
-              className={`day ${cls}`}
+              aria-disabled={dayState.blocked}
+              className={`day ${dayState.className}`}
             >
               {date.getDate()}
             </div>
