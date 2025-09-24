@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/airbnb-sync",
-      "schedule": "@daily",
+      "schedule": "0 3 * * *",
       "headers": { "x-cron-secret": "${CRON_SECRET}" }
     }
   ]
