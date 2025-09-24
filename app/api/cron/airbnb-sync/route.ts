@@ -6,14 +6,20 @@ import { sendFailureNotification } from '@/lib/notifications';
 const CACHE_HEADERS = { 'Cache-Control': 'no-store' } as const;
 
 function isAuthorized(request: Request): boolean {
-  const secret = process.env.CRON_SECRET;
-  if (!secret) {
-    logger.warn('CRON_SECRET is not configured');
-    return false;
-  }
-  const provided = request.headers.get('x-cron-secret');
-  return provided === secret;
+  const secret = process.env.CRON_SECRET ?? '';
+  const h = request.headers;
+
+  // Vercel Cron adds this automatically (works with vercel.json that has no headers)
+  const isVercelCron = !!h.get('x-vercel-cron');
+
+  // Manual/external scheduler support
+  const headerSecret = h.get('x-cron-secret');
+  const auth = h.get('authorization');
+  const hasSecret = headerSecret === secret || auth === `Bearer ${secret}`;
+
+  return isVercelCron || hasSecret;
 }
+
 
 export async function POST(request: Request) {
   if (!isAuthorized(request)) {
