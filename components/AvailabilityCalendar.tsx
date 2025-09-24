@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { ReactElement, ChangeEvent } from 'react';
 
-type CalendarBlock = {
+export type CalendarBlock = {
   id: string;
   source: string;
   status: string;
@@ -41,11 +41,62 @@ function classifyBlock(block: CalendarBlock | undefined): DayState {
   return { blocked: true, className: 'blocked' };
 }
 
-export function AvailabilityCalendar(): ReactElement {
+export interface SelectedDateRange {
+  checkIn: Date | null;
+  checkOut: Date | null;
+}
+
+interface AvailabilityCalendarProps {
+  selectedRange?: SelectedDateRange;
+  onChange?: (range: SelectedDateRange) => void;
+  onBlocksChange?: (blocks: CalendarBlock[]) => void;
+}
+
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+function isSameDay(left: Date, right: Date): boolean {
+  return (
+    left.getFullYear() === right.getFullYear() &&
+    left.getMonth() === right.getMonth() &&
+    left.getDate() === right.getDate()
+  );
+}
+
+function addDays(date: Date, days: number): Date {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+function isRangeBlocked(
+  start: Date,
+  end: Date,
+  blocks: CalendarBlock[],
+): boolean {
+  const startValue = toUtcDateValue(start);
+  const endValueExclusive = toUtcDateValue(end) + MS_PER_DAY;
+  if (endValueExclusive <= startValue) {
+    return true;
+  }
+  return blocks.some((block) => {
+    const blockStart = parseDateValue(block.start_date);
+    const blockEnd = parseDateValue(block.end_date);
+    return startValue < blockEnd && endValueExclusive > blockStart;
+  });
+}
+
+export function AvailabilityCalendar({
+  selectedRange,
+  onChange,
+  onBlocksChange,
+}: AvailabilityCalendarProps = {}): ReactElement {
   const [month, setMonth] = useState(new Date());
   const [blocks, setBlocks] = useState<CalendarBlock[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectionError, setSelectionError] = useState<string | null>(null);
+
+  const range = selectedRange ?? { checkIn: null, checkOut: null };
 
   useEffect(() => {
     let isMounted = true;
@@ -79,6 +130,12 @@ export function AvailabilityCalendar(): ReactElement {
     };
   }, []);
 
+  useEffect(() => {
+    if (onBlocksChange) {
+      onBlocksChange(blocks);
+    }
+  }, [blocks, onBlocksChange]);
+
   const monthNames = Array.from({ length: 12 }, (_, i) =>
     new Date(0, i).toLocaleString('default', { month: 'long' })
   );
@@ -109,6 +166,58 @@ export function AvailabilityCalendar(): ReactElement {
     setMonth(new Date(month.getFullYear(), Number(e.target.value), 1));
   const changeYear = (e: ChangeEvent<HTMLSelectElement>) =>
     setMonth(new Date(Number(e.target.value), month.getMonth(), 1));
+
+  const isUnavailableRangeSelected = useMemo(() => {
+    if (!range.checkIn || !range.checkOut) {
+      return false;
+    }
+    return isRangeBlocked(range.checkIn, range.checkOut, blocks);
+  }, [blocks, range.checkIn, range.checkOut]);
+
+  const handleDayClick = (date: Date) => {
+    const block = findBlockForDate(date);
+    const dayState = classifyBlock(block);
+    if (dayState.blocked) {
+      return;
+    }
+
+    const nextRange: SelectedDateRange = { ...range };
+    const clickedValue = toUtcDateValue(date);
+    const currentStartValue = range.checkIn ? toUtcDateValue(range.checkIn) : null;
+
+    if (!range.checkIn || range.checkOut) {
+      nextRange.checkIn = date;
+      nextRange.checkOut = null;
+      setSelectionError(null);
+      onChange?.(nextRange);
+      return;
+    }
+
+    if (currentStartValue !== null && clickedValue <= currentStartValue) {
+      nextRange.checkIn = date;
+      nextRange.checkOut = null;
+      setSelectionError(null);
+      onChange?.(nextRange);
+      return;
+    }
+
+    if (isRangeBlocked(range.checkIn, date, blocks)) {
+      setSelectionError('Those dates include unavailable nights. Please choose another range.');
+      return;
+    }
+
+    nextRange.checkIn = range.checkIn;
+    nextRange.checkOut = date;
+    setSelectionError(null);
+    onChange?.(nextRange);
+  };
+
+  const checkOutDisplay = useMemo(() => {
+    if (!range.checkOut) {
+      return null;
+    }
+    return addDays(range.checkOut, -1);
+  }, [range.checkOut]);
 
   return (
     <div className="availability-calendar">
@@ -162,18 +271,56 @@ export function AvailabilityCalendar(): ReactElement {
         {days.map((date) => {
           const block = findBlockForDate(date);
           const dayState = classifyBlock(block);
+          const classes = ['day', dayState.className];
+          const isSelectedStart = range.checkIn && isSameDay(date, range.checkIn);
+          const isSelectedEnd = checkOutDisplay && isSameDay(date, checkOutDisplay);
+          const isWithinRange =
+            range.checkIn && checkOutDisplay
+              ? toUtcDateValue(date) > toUtcDateValue(range.checkIn) &&
+                toUtcDateValue(date) < toUtcDateValue(checkOutDisplay)
+              : false;
+
+          if (!dayState.blocked) {
+            classes.push('interactive');
+          }
+          if (isSelectedStart) {
+            classes.push('selected', 'selected-start');
+          }
+          if (isSelectedEnd) {
+            classes.push('selected', 'selected-end');
+          }
+          if (isWithinRange) {
+            classes.push('in-range');
+          }
+          if (isUnavailableRangeSelected && (isSelectedStart || isSelectedEnd || isWithinRange)) {
+            classes.push('range-conflict');
+          }
+
           return (
             <div
               key={date.toISOString()}
               role="gridcell"
               aria-disabled={dayState.blocked}
-              className={`day ${dayState.className}`}
+              tabIndex={dayState.blocked ? -1 : 0}
+              onClick={() => handleDayClick(date)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  handleDayClick(date);
+                }
+              }}
+              className={classes.join(' ')}
             >
               {date.getDate()}
             </div>
           );
         })}
       </div>
+      {selectionError ? (
+        <div role="alert" className="availability-selection-error">
+          {selectionError}
+        </div>
+      ) : null}
     </div>
   );
 }
