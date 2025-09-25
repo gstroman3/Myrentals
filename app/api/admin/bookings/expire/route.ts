@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
+import { buildHoldExpiredEmail } from '@/emails/hold-expired';
 import { logger } from '@/lib/logging';
 import { sendGuestNotification } from '@/lib/notifications';
+import { createStayDetailsFromBlocks } from '@/lib/stays';
 import {
   HttpError,
   fetchBookingBlocks,
@@ -46,6 +48,7 @@ export async function POST(request: Request) {
     await updateBooking(booking.id, { status: 'expired' });
 
     const blocks = await fetchBookingBlocks(booking.id);
+    const stayDetails = createStayDetailsFromBlocks(blocks);
     const removableIds = blocks
       .filter((block) => block.status === 'internal_pending' || block.status === 'pending')
       .map((block) => block.id);
@@ -53,21 +56,19 @@ export async function POST(request: Request) {
 
     const guest = await fetchGuest(booking.guest_id);
     if (guest?.email) {
-      const greeting = guest.full_name ? `Hi ${guest.full_name},` : 'Hello,';
-      const messageLines = [
-        greeting,
-        '',
-        'We did not receive payment in time and the temporary hold on your requested dates has expired.',
-        `Invoice: ${invoiceNumber}`,
-        '',
-        'Those dates are now available again. Please reach out if you still need assistance.',
-        '',
-        'Regards,',
-        'Stroman Properties',
-      ];
+      const expiredAt = new Date().toISOString();
+      const emailContent = await buildHoldExpiredEmail({
+        guestName: guest.full_name,
+        invoiceNumber,
+        stay: stayDetails,
+        expiredAt,
+        holdExpiresAt: booking.hold_expires_at,
+      });
       await sendGuestNotification(guest.email, {
-        subject: 'Booking Hold Expired',
-        body: messageLines.join('\n'),
+        subject: emailContent.subject,
+        body: emailContent.text,
+        html: emailContent.html,
+        bccOwner: true,
       });
     } else {
       logger.warn('Skipping hold expiration email because guest email is missing', {

@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
+import { buildBookingHoldEmail } from '@/emails/booking-hold';
 import { logger } from '@/lib/logging';
+import { sendGuestNotification } from '@/lib/notifications';
+import { getPaymentOption } from '@/lib/paymentOptions';
+import { createStayDetails } from '@/lib/stays';
 import { supabaseJson, supabaseRequest } from '@/lib/supabase/rest';
 
 interface HoldRequestBody {
@@ -196,6 +200,27 @@ export async function POST(request: Request) {
       hold_expires_at: result.hold_expires_at ?? holdExpiresAt,
       payment_method: result.payment_method ?? paymentMethod,
     };
+
+    const stayDetails = createStayDetails(checkIn.toISOString(), checkOut.toISOString());
+    const paymentOption = getPaymentOption(paymentMethod);
+    const siteUrl = process.env.BOOKINGS_SITE_URL ?? 'https://stromanproperties.com';
+    const proofUrl = `${siteUrl}/bookings/${encodeURIComponent(payload.invoice_number)}/upload-proof`;
+    const emailContent = await buildBookingHoldEmail({
+      guestName: fullName,
+      invoiceNumber: payload.invoice_number,
+      stay: stayDetails,
+      holdExpiresAt: payload.hold_expires_at,
+      totalAmount: payload.total_amount,
+      paymentOption,
+      proofUrl,
+    });
+
+    await sendGuestNotification(email, {
+      subject: emailContent.subject,
+      body: emailContent.text,
+      html: emailContent.html,
+      bccOwner: true,
+    });
 
     return NextResponse.json(payload, { status: 201 });
   } catch (error) {

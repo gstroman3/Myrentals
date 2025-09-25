@@ -3,11 +3,13 @@ import { logger } from '@/lib/logging';
 interface NotifyOptions {
   subject: string;
   body: string;
+  html?: string;
 }
 
 interface EmailDeliveryOptions extends NotifyOptions {
   to: string | string[];
   from?: string;
+  bcc?: string | string[];
   context: string;
 }
 
@@ -16,7 +18,11 @@ function getResendApiKey(): string | null {
 }
 
 function getDefaultFromAddress(): string {
-  return process.env.BOOKINGS_NOTIFY_FROM ?? 'alerts@stroman-properties.com';
+  const from =
+    process.env.BOOKINGS_FROM_EMAIL ??
+    process.env.BOOKINGS_NOTIFY_FROM ??
+    'bookings@stromanproperties.com';
+  return from.trim() || 'bookings@stromanproperties.com';
 }
 
 function normalizeRecipients(to: string | string[]): string[] {
@@ -24,6 +30,16 @@ function normalizeRecipients(to: string | string[]): string[] {
   return raw
     .map((value) => value.trim())
     .filter((value) => Boolean(value));
+}
+
+function mergeRecipients(
+  ...groups: Array<string | string[] | null | undefined>
+): string[] {
+  const collected = groups.flatMap((group) => {
+    if (!group) return [];
+    return normalizeRecipients(Array.isArray(group) ? group : [group]);
+  });
+  return Array.from(new Set(collected));
 }
 
 async function sendEmail(options: EmailDeliveryOptions): Promise<void> {
@@ -44,6 +60,8 @@ async function sendEmail(options: EmailDeliveryOptions): Promise<void> {
     to: recipients,
     subject: options.subject,
     text: options.body,
+    html: options.html,
+    bcc: options.bcc ? normalizeRecipients(options.bcc) : undefined,
   };
 
   try {
@@ -76,9 +94,10 @@ export async function sendFailureNotification(options: NotifyOptions): Promise<v
   }
   await sendEmail({
     to,
-    from: process.env.BOOKINGS_NOTIFY_FROM,
+    from: getDefaultFromAddress(),
     subject: options.subject,
     body: options.body,
+    html: options.html,
     context: 'failure notification',
   });
 }
@@ -91,22 +110,35 @@ export async function sendOwnerNotification(options: NotifyOptions): Promise<voi
   }
   await sendEmail({
     to,
-    from: process.env.BOOKINGS_NOTIFY_FROM,
+    from: getDefaultFromAddress(),
     subject: options.subject,
     body: options.body,
+    html: options.html,
     context: 'owner notification',
   });
 }
 
+interface GuestNotifyOptions extends NotifyOptions {
+  bcc?: string | string[];
+  bccOwner?: boolean;
+}
+
 export async function sendGuestNotification(
   recipient: string,
-  options: NotifyOptions,
+  options: GuestNotifyOptions,
 ): Promise<void> {
+  const ownerBcc = options.bccOwner ? getOwnerRecipient() : null;
+  const bcc = mergeRecipients(options.bcc, ownerBcc);
   await sendEmail({
     to: recipient,
-    from: process.env.BOOKINGS_GUEST_FROM ?? process.env.BOOKINGS_NOTIFY_FROM,
+    from:
+      process.env.BOOKINGS_FROM_EMAIL ??
+      process.env.BOOKINGS_GUEST_FROM ??
+      getDefaultFromAddress(),
     subject: options.subject,
     body: options.body,
+    html: options.html,
+    bcc: bcc.length ? bcc : undefined,
     context: 'guest notification',
   });
 }
