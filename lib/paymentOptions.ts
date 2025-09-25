@@ -1,10 +1,14 @@
-export type PaymentMethod = 'zelle' | 'venmo' | 'paypal';
+export type PaymentMethod = 'zelle' | 'venmo';
 
 export interface PaymentOption {
   id: PaymentMethod;
   label: string;
   recipient: string;
   instructions: string;
+  logo: {
+    src: string;
+    alt: string;
+  };
 }
 
 export const PAYMENT_OPTIONS: PaymentOption[] = [
@@ -14,6 +18,10 @@ export const PAYMENT_OPTIONS: PaymentOption[] = [
     recipient: 'payments@stromanproperties.com',
     instructions:
       'Send via your banking app to Stroman Properties. Include the memo so we can match your transfer quickly.',
+    logo: {
+      src: '/images/payment-zelle.svg',
+      alt: 'Zelle',
+    },
   },
   {
     id: 'venmo',
@@ -21,13 +29,10 @@ export const PAYMENT_OPTIONS: PaymentOption[] = [
     recipient: '@StromanProperties',
     instructions:
       'Open Venmo and send to @StromanProperties. Use the memo exactly and add your stay dates in the notes.',
-  },
-  {
-    id: 'paypal',
-    label: 'PayPal',
-    recipient: 'paypal.me/stromanproperties',
-    instructions:
-      'Visit paypal.me/stromanproperties and submit the total as “Friends & Family” when possible to avoid fees.',
+    logo: {
+      src: '/images/payment-venmo.svg',
+      alt: 'Venmo',
+    },
   },
 ];
 

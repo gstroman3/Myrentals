@@ -358,20 +358,65 @@ p, label {
   margin: 0;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 .payment-methods legend {
   font-weight: 600;
   color: var(--color-primary);
 }
 
-.payment-option {
+.payment-options {
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.payment-option {
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(3, 59, 136, 0.25);
+  border-radius: 999px;
+  background: #fff;
   font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.payment-option:focus-within,
+.payment-option:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(3, 59, 136, 0.15);
 }
 
 .payment-option input {
   accent-color: var(--color-primary);
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.payment-option-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15rem 0;
+}
+
+.payment-option-image {
+  height: auto;
+  width: 96px;
 }
 
 .form-warning,
