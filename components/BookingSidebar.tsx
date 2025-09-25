@@ -2,8 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import type { Property } from '@/lib/properties';
-
-type PaymentMethod = 'zelle' | 'venmo' | 'paypal';
+import { PAYMENT_OPTIONS, type PaymentMethod } from '@/lib/paymentOptions';
 
 type HoldResponse = {
   invoice_number: number | string;
@@ -18,34 +17,6 @@ interface BookingSidebarProps {
   propertyTimezone: string;
   holdWindowHours: number;
 }
-
-interface PaymentOption {
-  id: PaymentMethod;
-  label: string;
-  recipient: string;
-  instructions: string;
-}
-
-const PAYMENT_OPTIONS: PaymentOption[] = [
-  {
-    id: 'zelle',
-    label: 'Zelle',
-    recipient: 'payments@stromanproperties.com',
-    instructions: 'Send via your banking app to Stroman Properties. Include the memo so we can match your transfer quickly.',
-  },
-  {
-    id: 'venmo',
-    label: 'Venmo',
-    recipient: '@StromanProperties',
-    instructions: 'Open Venmo and send to @StromanProperties. Use the memo exactly and add your stay dates in the notes.',
-  },
-  {
-    id: 'paypal',
-    label: 'PayPal',
-    recipient: 'paypal.me/stromanproperties',
-    instructions: 'Visit paypal.me/stromanproperties and submit the total as “Friends & Family” when possible to avoid fees.',
-  },
-];
 
 interface FormState {
   fullName: string;

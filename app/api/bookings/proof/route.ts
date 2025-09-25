@@ -1,7 +1,9 @@
 import { randomUUID } from 'crypto';
 import { NextResponse } from 'next/server';
+import { buildPaymentProofReceivedEmail } from '@/emails/payment-proof-received';
 import { logger } from '@/lib/logging';
 import { sendOwnerNotification } from '@/lib/notifications';
+import { createStayDetailsFromBlocks } from '@/lib/stays';
 import { supabaseJson, supabaseRequest } from '@/lib/supabase/rest';
 import { uploadStorageObject } from '@/lib/supabase/storage';
 
@@ -141,13 +143,14 @@ export async function POST(request: Request) {
     });
 
     const processor = resolveProcessor(booking.payment_method);
+    const receivedAt = new Date().toISOString();
     const updatePayload = {
       payer_name: payerName,
       reference: reference ?? null,
       note: note ?? null,
       proof_file_url: uploadResult.publicUrl,
       processor,
-      received_at: new Date().toISOString(),
+      received_at: receivedAt,
     };
 
     const updateResponse = await supabaseRequest(
@@ -164,19 +167,28 @@ export async function POST(request: Request) {
       throw new Error(`Failed to update payment record (${updateResponse.status}): ${text}`);
     }
 
-    const emailLines = [
-      'A guest submitted payment proof.',
-      `Invoice: ${invoiceNumber}`,
-      `Payer: ${payerName}`,
-      `Processor: ${processor}`,
-      reference ? `Reference: ${reference}` : null,
-      note ? `Note: ${note}` : null,
-      `Proof URL: ${uploadResult.publicUrl}`,
-    ].filter(Boolean);
+    const blockRecords =
+      (await supabaseJson<{ start_date: string; end_date: string }[]>(
+        `/calendar_blocks?booking_id=eq.${encodeURIComponent(booking.id)}&select=start_date,end_date`,
+      )) ?? [];
+    const stayDetails = createStayDetailsFromBlocks(blockRecords);
+
+    const emailContent = await buildPaymentProofReceivedEmail({
+      invoiceNumber,
+      payerName,
+      processor,
+      reference,
+      note,
+      proofUrl: uploadResult.publicUrl,
+      submittedAt: receivedAt,
+      stay: stayDetails,
+      paymentMethod: booking.payment_method,
+    });
 
     await sendOwnerNotification({
-      subject: 'Payment proof received.',
-      body: emailLines.join('\n'),
+      subject: emailContent.subject,
+      body: emailContent.text,
+      html: emailContent.html,
     });
 
     return NextResponse.json({

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
+import { buildBookingConfirmedEmail } from '@/emails/booking-confirmed';
 import { logger } from '@/lib/logging';
 import { sendGuestNotification } from '@/lib/notifications';
+import { createStayDetailsFromBlocks } from '@/lib/stays';
 import {
   HttpError,
   fetchBookingBlocks,
@@ -52,6 +54,7 @@ export async function POST(request: Request) {
     await updateBooking(booking.id, { status: 'paid', paid_at: now });
 
     const blocks = await fetchBookingBlocks(booking.id);
+    const stayDetails = createStayDetailsFromBlocks(blocks);
     const internalPendingIds = blocks
       .filter((block) => block.status === 'internal_pending')
       .map((block) => block.id);
@@ -66,21 +69,20 @@ export async function POST(request: Request) {
 
     const guest = await fetchGuest(booking.guest_id);
     if (guest?.email) {
-      const greeting = guest.full_name ? `Hi ${guest.full_name},` : 'Hello,';
-      const messageLines = [
-        greeting,
-        '',
-        'Great news — your booking is confirmed! We have marked your payment as received.',
-        `Invoice: ${invoiceNumber}`,
-        '',
-        'We look forward to hosting you.',
-        '',
-        'Warm regards,',
-        'Stroman Properties',
-      ];
+      const siteUrl = process.env.BOOKINGS_SITE_URL ?? 'https://stromanproperties.com';
+      const arrivalGuideUrl = `${siteUrl}/properties/ashburn-estate`;
+      const emailContent = await buildBookingConfirmedEmail({
+        guestName: guest.full_name,
+        invoiceNumber,
+        stay: stayDetails,
+        paidAt: now,
+        arrivalGuideUrl,
+      });
       await sendGuestNotification(guest.email, {
-        subject: 'Booking Confirmed',
-        body: messageLines.join('\n'),
+        subject: emailContent.subject,
+        body: emailContent.text,
+        html: emailContent.html,
+        bccOwner: true,
       });
     } else {
       logger.warn('Skipping booking confirmation email because guest email is missing', {
