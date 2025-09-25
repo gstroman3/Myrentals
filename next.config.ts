@@ -1,7 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  env: {
+    PAYMENT_ZELLE_NAME: process.env.PAYMENT_ZELLE_NAME,
+    PAYMENT_ZELLE_EMAIL: process.env.PAYMENT_ZELLE_EMAIL,
+    PAYMENT_ZELLE_PHONE: process.env.PAYMENT_ZELLE_PHONE,
+    PAYMENT_VENMO_HANDLE: process.env.PAYMENT_VENMO_HANDLE,
+  },
 };
 
 export default nextConfig;

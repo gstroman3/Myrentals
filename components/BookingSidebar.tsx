@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
+import PaymentInstructions from './PaymentInstructions';
 import type { Property } from '@/lib/properties';
 import { PAYMENT_OPTIONS, type PaymentMethod } from '@/lib/paymentOptions';
 
@@ -74,18 +75,6 @@ function formatMemo(
     day: '2-digit',
   }).format(stayEnd);
   return `Invoice ${invoiceNumber} / ${lastName || 'Guest'} / ${start}–${end}`;
-}
-
-function formatDateTimeInZone(value: string, timeZone: string): string {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-  return new Intl.DateTimeFormat('en-US', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-    timeZone,
-  }).format(date);
 }
 
 export default function BookingSidebar({
@@ -313,20 +302,14 @@ export default function BookingSidebar({
       {holdDetails && selectedPayment ? (
         <div className="hold-next-steps card">
           <h3>Next steps</h3>
-          <p>
-            Invoice <strong>{holdDetails.invoice_number}</strong> is reserved until{' '}
-            <strong>{formatDateTimeInZone(holdDetails.hold_expires_at, propertyTimezone)}</strong>.
-          </p>
-          <p>
-            Send the total via <strong>{selectedPayment.label}</strong> to{' '}
-            <strong>{selectedPayment.recipient}</strong>.
-          </p>
-          <p>{selectedPayment.instructions}</p>
-          {memoText ? (
-            <p className="payment-memo">
-              Memo: <strong>{memoText}</strong>
-            </p>
-          ) : null}
+          <PaymentInstructions
+            method={selectedPayment.id}
+            methodLabel={selectedPayment.label}
+            invoiceNumber={holdDetails.invoice_number}
+            memoText={memoText ?? `Invoice ${holdDetails.invoice_number}`}
+            holdExpiresAt={holdDetails.hold_expires_at}
+            timeZone={propertyTimezone}
+          />
           <p className="proof-note">
             Upload payment proof (screenshot or transaction ID) once sent so we can confirm your stay quickly.
           </p>
