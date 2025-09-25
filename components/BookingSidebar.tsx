@@ -108,7 +108,10 @@ export default function BookingSidebar({
       return null;
     }
     const nightlyTotal = nights * property.nightlyRate;
-    const cleaningFee = property.cleaningFee;
+    const cleaningFee =
+      nights === 1
+        ? property.singleNightCleaningFee ?? property.cleaningFee
+        : property.cleaningFee;
     const taxable = nightlyTotal + cleaningFee;
     const taxes = Number((taxable * property.taxRate).toFixed(2));
     const total = nightlyTotal + cleaningFee + taxes;
@@ -118,7 +121,13 @@ export default function BookingSidebar({
       taxes,
       total,
     };
-  }, [nights, property.cleaningFee, property.nightlyRate, property.taxRate]);
+  }, [
+    nights,
+    property.cleaningFee,
+    property.nightlyRate,
+    property.singleNightCleaningFee,
+    property.taxRate,
+  ]);
 
   const selectedPayment = useMemo(
     () => PAYMENT_OPTIONS.find((option) => option.id === (confirmedMethod ?? form.paymentMethod)),
