@@ -11,11 +11,14 @@ export interface PaymentOption {
   };
 }
 
+const ZELLE_EMAIL = process.env.PAYMENT_ZELLE_EMAIL?.trim() || 'payments@stromanproperties.com';
+const VENMO_HANDLE = process.env.PAYMENT_VENMO_HANDLE?.trim() || '@StromanProperties';
+
 export const PAYMENT_OPTIONS: PaymentOption[] = [
   {
     id: 'zelle',
     label: 'Zelle',
-    recipient: 'payments@stromanproperties.com',
+    recipient: ZELLE_EMAIL,
     instructions:
       'Send via your banking app to Stroman Properties. Include the memo so we can match your transfer quickly.',
     logo: {
@@ -26,9 +29,8 @@ export const PAYMENT_OPTIONS: PaymentOption[] = [
   {
     id: 'venmo',
     label: 'Venmo',
-    recipient: '@StromanProperties',
-    instructions:
-      'Open Venmo and send to @StromanProperties. Use the memo exactly and add your stay dates in the notes.',
+    recipient: VENMO_HANDLE,
+    instructions: `Open Venmo and send to ${VENMO_HANDLE}. Use the memo exactly and add your stay dates in the notes.`,
     logo: {
       src: '/images/payment-venmo.svg',
       alt: 'Venmo',

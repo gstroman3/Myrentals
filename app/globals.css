@@ -459,8 +459,44 @@ p, label {
   color: var(--color-text-secondary);
 }
 
+.hold-next-steps .hold-countdown {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.hold-next-steps .hold-countdown.expired {
+  color: #8a1f1f;
+}
+
 .hold-next-steps strong {
   color: var(--color-primary);
+}
+
+.hold-next-steps .payment-instructions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.hold-next-steps .payment-contact {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+}
+
+.hold-next-steps .payment-contact li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-top: 0.35rem;
+  font-size: 0.95rem;
+}
+
+.hold-next-steps .payment-contact span {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
 }
 
 .hold-next-steps .payment-memo {
@@ -468,6 +504,10 @@ p, label {
   background: rgba(59, 130, 246, 0.1);
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
+}
+
+.hold-next-steps .method-note {
+  font-size: 0.85rem;
 }
 
 .hold-next-steps .proof-note,
