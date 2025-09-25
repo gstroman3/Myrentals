@@ -5,6 +5,10 @@ import { useMemo, useState } from 'react';
 import PaymentInstructions from './PaymentInstructions';
 import type { Property } from '@/lib/properties';
 import { PAYMENT_OPTIONS, type PaymentMethod } from '@/lib/paymentOptions';
+import {
+  LEGAL_CANCELLATION_POLICY_URL,
+  LEGAL_RENTAL_AGREEMENT_URL,
+} from '@/lib/legal';
 
 type HoldResponse = {
   invoice_number: number | string;
@@ -95,6 +99,7 @@ export default function BookingSidebar({
   const [error, setError] = useState<string | null>(null);
   const [holdDetails, setHoldDetails] = useState<HoldResponse | null>(null);
   const [confirmedMethod, setConfirmedMethod] = useState<PaymentMethod | null>(null);
+  const [hasAgreedToPolicies, setHasAgreedToPolicies] = useState(false);
 
   const nights = useMemo(() => calculateNights(checkIn, checkOut), [checkIn, checkOut]);
 
@@ -121,7 +126,13 @@ export default function BookingSidebar({
   );
 
   const isRangeSelected = Boolean(checkIn && checkOut && nights > 0);
-  const isFormComplete = Boolean(form.fullName && form.email && form.phone && isRangeSelected);
+  const isFormComplete = Boolean(
+    form.fullName &&
+    form.email &&
+    form.phone &&
+    isRangeSelected &&
+    hasAgreedToPolicies,
+  );
   const isSubmitDisabled =
     !isFormComplete || hasBlockedOverlap || isSubmitting || Boolean(holdDetails);
 
@@ -258,14 +269,24 @@ export default function BookingSidebar({
         <fieldset className="payment-methods" disabled={Boolean(holdDetails)}>
           <legend>Preferred payment</legend>
           <div className="payment-options">
-            {PAYMENT_OPTIONS.map((option) => (
-              <label key={option.id} className="payment-option">
-                <input
-                  type="radio"
-                  name="payment-method"
-                  value={option.id}
+            {PAYMENT_OPTIONS.map((option) => {
+              const optionClassName = `payment-option${
+                option.disabled ? ' payment-option-disabled' : ''
+              }`;
+              return (
+                <label key={option.id} className={optionClassName} aria-disabled={option.disabled}>
+                  <input
+                    type="radio"
+                    name="payment-method"
+                    value={option.id}
                   checked={form.paymentMethod === option.id}
-                  onChange={() => setForm({ ...form, paymentMethod: option.id })}
+                  onChange={() => {
+                    if (option.disabled) {
+                      return;
+                    }
+                    setForm({ ...form, paymentMethod: option.id });
+                  }}
+                  disabled={option.disabled}
                 />
                 <span className="payment-option-logo" aria-hidden="true">
                   <Image
@@ -276,11 +297,36 @@ export default function BookingSidebar({
                     className="payment-option-image"
                   />
                 </span>
-                <span className="sr-only">{option.label}</span>
+                <span className="payment-option-name">{option.label}</span>
+                {option.statusLabel ? (
+                  <span className="payment-option-status">{option.statusLabel}</span>
+                ) : null}
               </label>
-            ))}
+              );
+            })}
           </div>
         </fieldset>
+
+        <label className="policy-consent">
+          <input
+            type="checkbox"
+            checked={hasAgreedToPolicies}
+            onChange={(event) => setHasAgreedToPolicies(event.target.checked)}
+            disabled={Boolean(holdDetails)}
+            required
+          />
+          <span>
+            I agree to the{' '}
+            <a href={LEGAL_RENTAL_AGREEMENT_URL} target="_blank" rel="noreferrer">
+              Rental Agreement
+            </a>{' '}
+            and{' '}
+            <a href={LEGAL_CANCELLATION_POLICY_URL} target="_blank" rel="noreferrer">
+              Cancellation Policy
+            </a>
+            .
+          </span>
+        </label>
 
         {hasBlockedOverlap ? (
           <div className="form-warning" role="alert">
@@ -298,6 +344,22 @@ export default function BookingSidebar({
         </button>
         <p className="hold-disclaimer">Soft-held for 24 hours. Unpaid holds auto-expire.</p>
       </form>
+
+      <div className="policy-links">
+        <h4>Policies</h4>
+        <ul>
+          <li>
+            <a href={LEGAL_RENTAL_AGREEMENT_URL} target="_blank" rel="noreferrer">
+              Rental Agreement
+            </a>
+          </li>
+          <li>
+            <a href={LEGAL_CANCELLATION_POLICY_URL} target="_blank" rel="noreferrer">
+              Cancellation Policy
+            </a>
+          </li>
+        </ul>
+      </div>
 
       {holdDetails && selectedPayment ? (
         <div className="hold-next-steps card">
