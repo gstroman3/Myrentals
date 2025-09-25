@@ -157,16 +157,16 @@ export default function BookingSidebar({
     setIsSubmitting(true);
     setError(null);
     try {
-      const response = await fetch('/api/bookings/holds', {
+      const response = await fetch('/api/bookings/hold', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           property_slug: property.slug,
+          full_name: form.fullName,
+          email: form.email,
+          phone: form.phone,
           check_in: checkIn.toISOString(),
           check_out: checkOut.toISOString(),
-          guest_name: form.fullName,
-          guest_email: form.email,
-          guest_phone: form.phone,
           payment_method: form.paymentMethod,
         }),
       });
