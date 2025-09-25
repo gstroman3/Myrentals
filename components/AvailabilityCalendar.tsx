@@ -107,9 +107,9 @@ export function AvailabilityCalendar({
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
         }
-        const payload = (await response.json()) as CalendarBlock[];
+        const payload = (await response.json()) as { calendar_blocks?: CalendarBlock[] };
         if (isMounted) {
-          setBlocks(payload);
+          setBlocks(payload.calendar_blocks ?? []);
           setError(null);
         }
       } catch (err) {
