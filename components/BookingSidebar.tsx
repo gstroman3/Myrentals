@@ -1,9 +1,14 @@
 'use client';
 
+import Image from 'next/image';
 import { useMemo, useState } from 'react';
+import PaymentInstructions from './PaymentInstructions';
 import type { Property } from '@/lib/properties';
-
-type PaymentMethod = 'zelle' | 'venmo' | 'paypal';
+import { PAYMENT_OPTIONS, type PaymentMethod } from '@/lib/paymentOptions';
+import {
+  LEGAL_CANCELLATION_POLICY_URL,
+  LEGAL_RENTAL_AGREEMENT_URL,
+} from '@/lib/legal';
 
 type HoldResponse = {
   invoice_number: number | string;
@@ -18,34 +23,6 @@ interface BookingSidebarProps {
   propertyTimezone: string;
   holdWindowHours: number;
 }
-
-interface PaymentOption {
-  id: PaymentMethod;
-  label: string;
-  recipient: string;
-  instructions: string;
-}
-
-const PAYMENT_OPTIONS: PaymentOption[] = [
-  {
-    id: 'zelle',
-    label: 'Zelle',
-    recipient: 'payments@stromanproperties.com',
-    instructions: 'Send via your banking app to Stroman Properties. Include the memo so we can match your transfer quickly.',
-  },
-  {
-    id: 'venmo',
-    label: 'Venmo',
-    recipient: '@StromanProperties',
-    instructions: 'Open Venmo and send to @StromanProperties. Use the memo exactly and add your stay dates in the notes.',
-  },
-  {
-    id: 'paypal',
-    label: 'PayPal',
-    recipient: 'paypal.me/stromanproperties',
-    instructions: 'Visit paypal.me/stromanproperties and submit the total as “Friends & Family” when possible to avoid fees.',
-  },
-];
 
 interface FormState {
   fullName: string;
@@ -104,18 +81,6 @@ function formatMemo(
   return `Invoice ${invoiceNumber} / ${lastName || 'Guest'} / ${start}–${end}`;
 }
 
-function formatDateTimeInZone(value: string, timeZone: string): string {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-  return new Intl.DateTimeFormat('en-US', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-    timeZone,
-  }).format(date);
-}
-
 export default function BookingSidebar({
   property,
   checkIn,
@@ -134,6 +99,7 @@ export default function BookingSidebar({
   const [error, setError] = useState<string | null>(null);
   const [holdDetails, setHoldDetails] = useState<HoldResponse | null>(null);
   const [confirmedMethod, setConfirmedMethod] = useState<PaymentMethod | null>(null);
+  const [hasAgreedToPolicies, setHasAgreedToPolicies] = useState(false);
 
   const nights = useMemo(() => calculateNights(checkIn, checkOut), [checkIn, checkOut]);
 
@@ -142,7 +108,10 @@ export default function BookingSidebar({
       return null;
     }
     const nightlyTotal = nights * property.nightlyRate;
-    const cleaningFee = property.cleaningFee;
+    const cleaningFee =
+      nights === 1
+        ? property.singleNightCleaningFee ?? property.cleaningFee
+        : property.cleaningFee;
     const taxable = nightlyTotal + cleaningFee;
     const taxes = Number((taxable * property.taxRate).toFixed(2));
     const total = nightlyTotal + cleaningFee + taxes;
@@ -152,7 +121,13 @@ export default function BookingSidebar({
       taxes,
       total,
     };
-  }, [nights, property.cleaningFee, property.nightlyRate, property.taxRate]);
+  }, [
+    nights,
+    property.cleaningFee,
+    property.nightlyRate,
+    property.singleNightCleaningFee,
+    property.taxRate,
+  ]);
 
   const selectedPayment = useMemo(
     () => PAYMENT_OPTIONS.find((option) => option.id === (confirmedMethod ?? form.paymentMethod)),
@@ -160,7 +135,13 @@ export default function BookingSidebar({
   );
 
   const isRangeSelected = Boolean(checkIn && checkOut && nights > 0);
-  const isFormComplete = Boolean(form.fullName && form.email && form.phone && isRangeSelected);
+  const isFormComplete = Boolean(
+    form.fullName &&
+    form.email &&
+    form.phone &&
+    isRangeSelected &&
+    hasAgreedToPolicies,
+  );
   const isSubmitDisabled =
     !isFormComplete || hasBlockedOverlap || isSubmitting || Boolean(holdDetails);
 
@@ -176,16 +157,16 @@ export default function BookingSidebar({
     setIsSubmitting(true);
     setError(null);
     try {
-      const response = await fetch('/api/bookings/holds', {
+      const response = await fetch('/api/bookings/hold', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           property_slug: property.slug,
+          full_name: form.fullName,
+          email: form.email,
+          phone: form.phone,
           check_in: checkIn.toISOString(),
           check_out: checkOut.toISOString(),
-          guest_name: form.fullName,
-          guest_email: form.email,
-          guest_phone: form.phone,
           payment_method: form.paymentMethod,
         }),
       });
@@ -296,19 +277,65 @@ export default function BookingSidebar({
 
         <fieldset className="payment-methods" disabled={Boolean(holdDetails)}>
           <legend>Preferred payment</legend>
-          {PAYMENT_OPTIONS.map((option) => (
-            <label key={option.id} className="payment-option">
-              <input
-                type="radio"
-                name="payment-method"
-                value={option.id}
-                checked={form.paymentMethod === option.id}
-                onChange={() => setForm({ ...form, paymentMethod: option.id })}
-              />
-              <span>{option.label}</span>
-            </label>
-          ))}
+          <div className="payment-options">
+            {PAYMENT_OPTIONS.map((option) => {
+              const optionClassName = `payment-option${
+                option.disabled ? ' payment-option-disabled' : ''
+              }`;
+              return (
+                <label key={option.id} className={optionClassName} aria-disabled={option.disabled}>
+                  <input
+                    type="radio"
+                    name="payment-method"
+                    value={option.id}
+                  checked={form.paymentMethod === option.id}
+                  onChange={() => {
+                    if (option.disabled) {
+                      return;
+                    }
+                    setForm({ ...form, paymentMethod: option.id });
+                  }}
+                  disabled={option.disabled}
+                />
+                <span className="payment-option-logo" aria-hidden="true">
+                  <Image
+                    src={option.logo.src}
+                    alt=""
+                    width={option.logo.width}
+                    height={option.logo.height}
+                    className="payment-option-image"
+                  />
+                </span>
+                <span className="payment-option-name">{option.label}</span>
+                {option.statusLabel ? (
+                  <span className="payment-option-status">{option.statusLabel}</span>
+                ) : null}
+              </label>
+              );
+            })}
+          </div>
         </fieldset>
+
+        <label className="policy-consent">
+          <input
+            type="checkbox"
+            checked={hasAgreedToPolicies}
+            onChange={(event) => setHasAgreedToPolicies(event.target.checked)}
+            disabled={Boolean(holdDetails)}
+            required
+          />
+          <span>
+            I agree to the{' '}
+            <a href={LEGAL_RENTAL_AGREEMENT_URL} target="_blank" rel="noreferrer">
+              Rental Agreement
+            </a>{' '}
+            and{' '}
+            <a href={LEGAL_CANCELLATION_POLICY_URL} target="_blank" rel="noreferrer">
+              Cancellation Policy
+            </a>
+            .
+          </span>
+        </label>
 
         {hasBlockedOverlap ? (
           <div className="form-warning" role="alert">
@@ -327,23 +354,33 @@ export default function BookingSidebar({
         <p className="hold-disclaimer">Soft-held for 24 hours. Unpaid holds auto-expire.</p>
       </form>
 
+      <div className="policy-links">
+        <h4>Policies</h4>
+        <ul>
+          <li>
+            <a href={LEGAL_RENTAL_AGREEMENT_URL} target="_blank" rel="noreferrer">
+              Rental Agreement
+            </a>
+          </li>
+          <li>
+            <a href={LEGAL_CANCELLATION_POLICY_URL} target="_blank" rel="noreferrer">
+              Cancellation Policy
+            </a>
+          </li>
+        </ul>
+      </div>
+
       {holdDetails && selectedPayment ? (
         <div className="hold-next-steps card">
           <h3>Next steps</h3>
-          <p>
-            Invoice <strong>{holdDetails.invoice_number}</strong> is reserved until{' '}
-            <strong>{formatDateTimeInZone(holdDetails.hold_expires_at, propertyTimezone)}</strong>.
-          </p>
-          <p>
-            Send the total via <strong>{selectedPayment.label}</strong> to{' '}
-            <strong>{selectedPayment.recipient}</strong>.
-          </p>
-          <p>{selectedPayment.instructions}</p>
-          {memoText ? (
-            <p className="payment-memo">
-              Memo: <strong>{memoText}</strong>
-            </p>
-          ) : null}
+          <PaymentInstructions
+            method={selectedPayment.id}
+            methodLabel={selectedPayment.label}
+            invoiceNumber={holdDetails.invoice_number}
+            memoText={memoText ?? `Invoice ${holdDetails.invoice_number}`}
+            holdExpiresAt={holdDetails.hold_expires_at}
+            timeZone={propertyTimezone}
+          />
           <p className="proof-note">
             Upload payment proof (screenshot or transaction ID) once sent so we can confirm your stay quickly.
           </p>

@@ -7,7 +7,7 @@ const CACHE_HEADERS = { 'Cache-Control': 'no-store' } as const;
 export async function GET() {
   try {
     const blocks = await fetchAllCalendarBlocks();
-    return NextResponse.json(blocks, { headers: CACHE_HEADERS });
+    return NextResponse.json({ calendar_blocks: blocks }, { headers: CACHE_HEADERS });
   } catch (error) {
     logger.error('Failed to load availability', error);
     return NextResponse.json(

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 48" role="img" aria-labelledby="title">
+  <title>Credit card</title>
+  <rect x="1.5" y="4.5" width="117" height="39" rx="8" fill="#0f172a" opacity="0.1" stroke="#0f172a" stroke-width="3" />
+  <rect x="12" y="16" width="96" height="8" rx="2" fill="#0f172a" opacity="0.25" />
+  <rect x="12" y="30" width="32" height="6" rx="2" fill="#0f172a" opacity="0.25" />
+  <rect x="50" y="30" width="32" height="6" rx="2" fill="#0f172a" opacity="0.25" />
+</svg>

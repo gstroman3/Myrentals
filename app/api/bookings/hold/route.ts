@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
+import { buildBookingHoldEmail } from '@/emails/booking-hold';
 import { logger } from '@/lib/logging';
+import { sendGuestNotification } from '@/lib/notifications';
+import { getPaymentOption } from '@/lib/paymentOptions';
+import { createStayDetails } from '@/lib/stays';
 import { supabaseJson, supabaseRequest } from '@/lib/supabase/rest';
 
 interface HoldRequestBody {
@@ -79,10 +83,14 @@ function computeTotals(start: Date, end: Date): HoldTotals {
   }
   const nightlyRate = Number(process.env.HOLD_NIGHTLY_RATE ?? '315');
   const cleaningFeeDefault = Number(process.env.HOLD_CLEANING_FEE ?? '200');
+  const singleNightCleaningFeeDefault = Number(
+    process.env.HOLD_SINGLE_NIGHT_CLEANING_FEE ?? '100',
+  );
   const taxRate = Number(process.env.HOLD_TAX_RATE ?? '0.1');
 
   const rateSubtotal = roundToCents(nightlyRate * nights);
-  const cleaningFee = roundToCents(cleaningFeeDefault);
+  const cleaningFeeBase = nights === 1 ? singleNightCleaningFeeDefault : cleaningFeeDefault;
+  const cleaningFee = roundToCents(cleaningFeeBase);
   const taxes = roundToCents((rateSubtotal + cleaningFee) * taxRate);
   const totalAmount = roundToCents(rateSubtotal + cleaningFee + taxes);
 
@@ -196,6 +204,27 @@ export async function POST(request: Request) {
       hold_expires_at: result.hold_expires_at ?? holdExpiresAt,
       payment_method: result.payment_method ?? paymentMethod,
     };
+
+    const stayDetails = createStayDetails(checkIn.toISOString(), checkOut.toISOString());
+    const paymentOption = getPaymentOption(paymentMethod);
+    const siteUrl = process.env.BOOKINGS_SITE_URL ?? 'https://stromanproperties.com';
+    const proofUrl = `${siteUrl}/bookings/${encodeURIComponent(payload.invoice_number)}/upload-proof`;
+    const emailContent = await buildBookingHoldEmail({
+      guestName: fullName,
+      invoiceNumber: payload.invoice_number,
+      stay: stayDetails,
+      holdExpiresAt: payload.hold_expires_at,
+      totalAmount: payload.total_amount,
+      paymentOption,
+      proofUrl,
+    });
+
+    await sendGuestNotification(email, {
+      subject: emailContent.subject,
+      body: emailContent.text,
+      html: emailContent.html,
+      bccOwner: true,
+    });
 
     return NextResponse.json(payload, { status: 201 });
   } catch (error) {

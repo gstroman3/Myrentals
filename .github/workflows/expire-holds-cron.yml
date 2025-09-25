@@ -1,0 +1,32 @@
+name: Expire booking holds
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  expire-holds:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger hold expiration endpoint
+        env:
+          CRON_BASE_URL: ${{ secrets.CRON_BASE_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -euo pipefail
+          if [ -z "${CRON_BASE_URL:-}" ]; then
+            echo "CRON_BASE_URL secret is not set" >&2
+            exit 1
+          fi
+          if [ -z "${CRON_SECRET:-}" ]; then
+            echo "CRON_SECRET secret is not set" >&2
+            exit 1
+          fi
+
+          response=$(curl -fsS -X POST \
+            -H "x-cron-secret: ${CRON_SECRET}" \
+            -H "Content-Type: application/json" \
+            "${CRON_BASE_URL%/}/api/cron/expire-holds")
+
+          echo "$response"

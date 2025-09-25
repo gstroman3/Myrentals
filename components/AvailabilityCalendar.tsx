@@ -53,6 +53,7 @@ interface AvailabilityCalendarProps {
 }
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
+const MIN_CALENDAR_DATE = new Date(2025, 0, 1);
 
 function isSameDay(left: Date, right: Date): boolean {
   return (
@@ -62,10 +63,8 @@ function isSameDay(left: Date, right: Date): boolean {
   );
 }
 
-function addDays(date: Date, days: number): Date {
-  const result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return result;
+function startOfDay(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
 function isRangeBlocked(
@@ -90,7 +89,22 @@ export function AvailabilityCalendar({
   onChange,
   onBlocksChange,
 }: AvailabilityCalendarProps = {}): ReactElement {
-  const [month, setMonth] = useState(new Date());
+  const minSelectableDate = useMemo(() => {
+    const today = startOfDay(new Date());
+    const earliest = startOfDay(MIN_CALENDAR_DATE);
+    return toUtcDateValue(today) > toUtcDateValue(earliest) ? today : earliest;
+  }, []);
+  const minCalendarMonth = useMemo(
+    () => new Date(minSelectableDate.getFullYear(), minSelectableDate.getMonth(), 1),
+    [minSelectableDate],
+  );
+  const initialMonth = useMemo(() => {
+    const currentMonthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    return toUtcDateValue(currentMonthStart) < toUtcDateValue(minCalendarMonth)
+      ? new Date(minCalendarMonth)
+      : currentMonthStart;
+  }, [minCalendarMonth]);
+  const [month, setMonth] = useState(initialMonth);
   const [blocks, setBlocks] = useState<CalendarBlock[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -107,9 +121,9 @@ export function AvailabilityCalendar({
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
         }
-        const payload = (await response.json()) as CalendarBlock[];
+        const payload = (await response.json()) as { calendar_blocks?: CalendarBlock[] };
         if (isMounted) {
-          setBlocks(payload);
+          setBlocks(payload.calendar_blocks ?? []);
           setError(null);
         }
       } catch (err) {
@@ -139,8 +153,20 @@ export function AvailabilityCalendar({
   const monthNames = Array.from({ length: 12 }, (_, i) =>
     new Date(0, i).toLocaleString('default', { month: 'long' })
   );
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 11 }, (_, i) => currentYear - 5 + i);
+  const years = useMemo(() => {
+    const startYear = minCalendarMonth.getFullYear();
+    const currentYear = month.getFullYear();
+    const endYear = Math.max(startYear + 10, currentYear);
+    return Array.from({ length: endYear - startYear + 1 }, (_, i) => startYear + i);
+  }, [minCalendarMonth, month]);
+  const minSelectableValue = useMemo(
+    () => toUtcDateValue(minSelectableDate),
+    [minSelectableDate],
+  );
+  const minCalendarMonthValue = useMemo(
+    () => toUtcDateValue(minCalendarMonth),
+    [minCalendarMonth],
+  );
 
   const daysInMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
   const firstDay = new Date(month.getFullYear(), month.getMonth(), 1).getDay();
@@ -158,14 +184,37 @@ export function AvailabilityCalendar({
     });
   };
 
-  const prevMonth = () =>
-    setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1));
+  const prevMonth = () => {
+    const candidate = new Date(month.getFullYear(), month.getMonth() - 1, 1);
+    if (toUtcDateValue(candidate) < minCalendarMonthValue) {
+      setMonth(new Date(minCalendarMonth));
+      return;
+    }
+    setMonth(candidate);
+  };
   const nextMonth = () =>
     setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1));
-  const changeMonth = (e: ChangeEvent<HTMLSelectElement>) =>
-    setMonth(new Date(month.getFullYear(), Number(e.target.value), 1));
-  const changeYear = (e: ChangeEvent<HTMLSelectElement>) =>
-    setMonth(new Date(Number(e.target.value), month.getMonth(), 1));
+  const changeMonth = (e: ChangeEvent<HTMLSelectElement>) => {
+    const candidate = new Date(month.getFullYear(), Number(e.target.value), 1);
+    if (toUtcDateValue(candidate) < minCalendarMonthValue) {
+      setMonth(new Date(minCalendarMonth));
+      return;
+    }
+    setMonth(candidate);
+  };
+  const changeYear = (e: ChangeEvent<HTMLSelectElement>) => {
+    const year = Number(e.target.value);
+    const candidate = new Date(year, month.getMonth(), 1);
+    if (toUtcDateValue(candidate) < minCalendarMonthValue) {
+      setMonth(new Date(year, minCalendarMonth.getMonth(), 1));
+      return;
+    }
+    setMonth(candidate);
+  };
+
+  const monthStartValue = toUtcDateValue(new Date(month.getFullYear(), month.getMonth(), 1));
+  const isPrevDisabled = monthStartValue <= minCalendarMonthValue;
+  const selectedYear = month.getFullYear();
 
   const isUnavailableRangeSelected = useMemo(() => {
     if (!range.checkIn || !range.checkOut) {
@@ -177,12 +226,12 @@ export function AvailabilityCalendar({
   const handleDayClick = (date: Date) => {
     const block = findBlockForDate(date);
     const dayState = classifyBlock(block);
-    if (dayState.blocked) {
+    const clickedValue = toUtcDateValue(date);
+    if (dayState.blocked || clickedValue < minSelectableValue) {
       return;
     }
 
     const nextRange: SelectedDateRange = { ...range };
-    const clickedValue = toUtcDateValue(date);
     const currentStartValue = range.checkIn ? toUtcDateValue(range.checkIn) : null;
 
     if (!range.checkIn || range.checkOut) {
@@ -212,17 +261,14 @@ export function AvailabilityCalendar({
     onChange?.(nextRange);
   };
 
-  const checkOutDisplay = useMemo(() => {
-    if (!range.checkOut) {
-      return null;
-    }
-    return addDays(range.checkOut, -1);
-  }, [range.checkOut]);
+  const checkOutDisplay = useMemo(() => range.checkOut, [range.checkOut]);
 
   return (
     <div className="availability-calendar">
       <div className="header">
-        <button onClick={prevMonth} aria-label="Previous Month">&lt;</button>
+        <button onClick={prevMonth} aria-label="Previous Month" disabled={isPrevDisabled}>
+          &lt;
+        </button>
         <div className="selectors">
           <select
             aria-label="Select Month"
@@ -230,14 +276,21 @@ export function AvailabilityCalendar({
             onChange={changeMonth}
           >
             {monthNames.map((m, i) => (
-              <option key={m} value={i}>
+              <option
+                key={m}
+                value={i}
+                disabled={
+                  selectedYear === minCalendarMonth.getFullYear() &&
+                  i < minCalendarMonth.getMonth()
+                }
+              >
                 {m}
               </option>
             ))}
           </select>
           <select
             aria-label="Select Year"
-            value={month.getFullYear()}
+            value={selectedYear}
             onChange={changeYear}
           >
             {years.map((y) => (
@@ -271,6 +324,9 @@ export function AvailabilityCalendar({
         {days.map((date) => {
           const block = findBlockForDate(date);
           const dayState = classifyBlock(block);
+          const dateValue = toUtcDateValue(date);
+          const isBeforeMinDate = dateValue < minSelectableValue;
+          const isSelectable = !dayState.blocked && !isBeforeMinDate;
           const classes = ['day', dayState.className];
           const isSelectedStart = range.checkIn && isSameDay(date, range.checkIn);
           const isSelectedEnd = checkOutDisplay && isSameDay(date, checkOutDisplay);
@@ -280,7 +336,10 @@ export function AvailabilityCalendar({
                 toUtcDateValue(date) < toUtcDateValue(checkOutDisplay)
               : false;
 
-          if (!dayState.blocked) {
+          if (isBeforeMinDate) {
+            classes.push('blocked');
+          }
+          if (isSelectable) {
             classes.push('interactive');
           }
           if (isSelectedStart) {
@@ -300,8 +359,8 @@ export function AvailabilityCalendar({
             <div
               key={date.toISOString()}
               role="gridcell"
-              aria-disabled={dayState.blocked}
-              tabIndex={dayState.blocked ? -1 : 0}
+              aria-disabled={!isSelectable}
+              tabIndex={isSelectable ? 0 : -1}
               onClick={() => handleDayClick(date)}
               onKeyDown={(event) => {
                 if (event.key === 'Enter' || event.key === ' ') {
