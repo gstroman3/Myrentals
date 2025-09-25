@@ -1,5 +1,8 @@
 /* eslint-disable @next/next/no-head-element */
 import * as React from 'react';
+import { LEGAL_POLICY_LINKS, SITE_URL } from '@/lib/legal';
+
+export { SITE_URL } from '@/lib/legal';
 
 const containerStyle: React.CSSProperties = {
   backgroundColor: '#f5f5f5',
@@ -78,13 +81,9 @@ export const buttonStyle: React.CSSProperties = {
   fontWeight: 600,
 };
 
-const SITE_FALLBACK = 'https://stromanproperties.com';
-
-export const SITE_URL = process.env.BOOKINGS_SITE_URL ?? SITE_FALLBACK;
-
 export const POLICY_LINKS = [
+  ...LEGAL_POLICY_LINKS,
   { label: 'House Rules', href: `${SITE_URL}/house-rules` },
-  { label: 'Cancellation Policy', href: `${SITE_URL}/cancellation-policy` },
 ];
 
 interface EmailLayoutProps {

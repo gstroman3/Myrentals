@@ -1,4 +1,4 @@
-export type PaymentMethod = 'zelle' | 'venmo';
+export type PaymentMethod = 'zelle' | 'venmo' | 'card';
 
 export interface PaymentOption {
   id: PaymentMethod;
@@ -11,6 +11,8 @@ export interface PaymentOption {
     width: number;
     height: number;
   };
+  disabled?: boolean;
+  statusLabel?: string;
 }
 
 const ZELLE_EMAIL = process.env.PAYMENT_ZELLE_EMAIL?.trim() || 'payments@stromanproperties.com';
@@ -41,6 +43,21 @@ export const PAYMENT_OPTIONS: PaymentOption[] = [
       width: 64,
       height: 48,
     },
+  },
+  {
+    id: 'card',
+    label: 'Pay by Card (3% fee)',
+    recipient: 'Secure payment link',
+    instructions:
+      'Use our secure Stripe checkout link to complete your payment with any major credit or debit card.',
+    logo: {
+      src: '/images/payment-card.svg',
+      alt: 'Credit or debit card',
+      width: 96,
+      height: 48,
+    },
+    disabled: true,
+    statusLabel: 'Coming soon',
   },
 ];
 

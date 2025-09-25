@@ -395,6 +395,25 @@ p, label {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.payment-option-name {
+  color: var(--color-primary);
+  font-size: 0.95rem;
+}
+
+.payment-option-status {
+  background: rgba(3, 59, 136, 0.08);
+  color: var(--color-primary);
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.payment-option.payment-option-disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
 .payment-option:focus-within,
 .payment-option:hover {
   border-color: var(--color-primary);
@@ -405,6 +424,10 @@ p, label {
   accent-color: var(--color-primary);
   flex-shrink: 0;
   margin: 0;
+}
+
+.payment-option.payment-option-disabled input {
+  cursor: not-allowed;
 }
 
 .payment-option-logo {
@@ -418,6 +441,55 @@ p, label {
   height: 48px;
   width: auto;
   max-width: 120px;
+}
+
+.policy-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--color-primary);
+}
+
+.policy-consent input {
+  margin-top: 0.15rem;
+}
+
+.policy-consent a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.policy-links {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid rgba(3, 59, 136, 0.1);
+}
+
+.policy-links h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: var(--color-primary);
+}
+
+.policy-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.policy-links a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  font-weight: 600;
 }
 
 .form-warning,

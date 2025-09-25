@@ -102,7 +102,17 @@ export default function PaymentInstructions({
   );
 
   let methodDetails: ReactNode;
-  if (method === 'zelle') {
+  if (method === 'card') {
+    methodDetails = (
+      <>
+        <p>Use the secure payment link we email you to pay by credit or debit card.</p>
+        <p className="method-note">
+          A 3% processing fee applies to card payments. Contact us if you need the checkout link
+          resent.
+        </p>
+      </>
+    );
+  } else if (method === 'zelle') {
     methodDetails = (
       <>
         <p>Use your bank&apos;s Zelle transfer feature to send to the contact below.</p>
