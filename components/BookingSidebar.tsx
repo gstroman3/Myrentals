@@ -271,8 +271,8 @@ export default function BookingSidebar({
                   <Image
                     src={option.logo.src}
                     alt=""
-                    width={96}
-                    height={40}
+                    width={option.logo.width}
+                    height={option.logo.height}
                     className="payment-option-image"
                   />
                 </span>

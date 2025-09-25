@@ -415,8 +415,9 @@ p, label {
 }
 
 .payment-option-image {
-  height: auto;
-  width: 96px;
+  height: 48px;
+  width: auto;
+  max-width: 120px;
 }
 
 .form-warning,

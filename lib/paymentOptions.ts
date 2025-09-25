@@ -8,6 +8,8 @@ export interface PaymentOption {
   logo: {
     src: string;
     alt: string;
+    width: number;
+    height: number;
   };
 }
 
@@ -22,8 +24,10 @@ export const PAYMENT_OPTIONS: PaymentOption[] = [
     instructions:
       'Send via your banking app to Stroman Properties. Include the memo so we can match your transfer quickly.',
     logo: {
-      src: '/images/payment-zelle.svg',
+      src: '/images/zelle-seeklogo.png',
       alt: 'Zelle',
+      width: 117,
+      height: 48,
     },
   },
   {
@@ -32,8 +36,10 @@ export const PAYMENT_OPTIONS: PaymentOption[] = [
     recipient: VENMO_HANDLE,
     instructions: `Open Venmo and send to ${VENMO_HANDLE}. Use the memo exactly and add your stay dates in the notes.`,
     logo: {
-      src: '/images/payment-venmo.svg',
+      src: '/images/venmo-seeklogo.png',
       alt: 'Venmo',
+      width: 64,
+      height: 48,
     },
   },
 ];
