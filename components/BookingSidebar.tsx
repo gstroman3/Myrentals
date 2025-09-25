@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import type { Property } from '@/lib/properties';
 import { PAYMENT_OPTIONS, type PaymentMethod } from '@/lib/paymentOptions';
@@ -267,18 +268,29 @@ export default function BookingSidebar({
 
         <fieldset className="payment-methods" disabled={Boolean(holdDetails)}>
           <legend>Preferred payment</legend>
-          {PAYMENT_OPTIONS.map((option) => (
-            <label key={option.id} className="payment-option">
-              <input
-                type="radio"
-                name="payment-method"
-                value={option.id}
-                checked={form.paymentMethod === option.id}
-                onChange={() => setForm({ ...form, paymentMethod: option.id })}
-              />
-              <span>{option.label}</span>
-            </label>
-          ))}
+          <div className="payment-options">
+            {PAYMENT_OPTIONS.map((option) => (
+              <label key={option.id} className="payment-option">
+                <input
+                  type="radio"
+                  name="payment-method"
+                  value={option.id}
+                  checked={form.paymentMethod === option.id}
+                  onChange={() => setForm({ ...form, paymentMethod: option.id })}
+                />
+                <span className="payment-option-logo" aria-hidden="true">
+                  <Image
+                    src={option.logo.src}
+                    alt=""
+                    width={96}
+                    height={40}
+                    className="payment-option-image"
+                  />
+                </span>
+                <span className="sr-only">{option.label}</span>
+              </label>
+            ))}
+          </div>
         </fieldset>
 
         {hasBlockedOverlap ? (
