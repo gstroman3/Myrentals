@@ -20,6 +20,7 @@ export type Property = {
   bathrooms: number;
   nightlyRate: number;
   cleaningFee: number;
+  singleNightCleaningFee?: number;
   taxRate: number;
   icalUrl?: string;
 };
@@ -37,6 +38,7 @@ export const properties: Property[] = [
     bathrooms: 3.5,
     nightlyRate: 315,
     cleaningFee: 200,
+    singleNightCleaningFee: 100,
     taxRate: 0.1,
     rooms: [
       {

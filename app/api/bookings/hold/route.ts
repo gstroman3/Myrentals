@@ -83,10 +83,14 @@ function computeTotals(start: Date, end: Date): HoldTotals {
   }
   const nightlyRate = Number(process.env.HOLD_NIGHTLY_RATE ?? '315');
   const cleaningFeeDefault = Number(process.env.HOLD_CLEANING_FEE ?? '200');
+  const singleNightCleaningFeeDefault = Number(
+    process.env.HOLD_SINGLE_NIGHT_CLEANING_FEE ?? '100',
+  );
   const taxRate = Number(process.env.HOLD_TAX_RATE ?? '0.1');
 
   const rateSubtotal = roundToCents(nightlyRate * nights);
-  const cleaningFee = roundToCents(cleaningFeeDefault);
+  const cleaningFeeBase = nights === 1 ? singleNightCleaningFeeDefault : cleaningFeeDefault;
+  const cleaningFee = roundToCents(cleaningFeeBase);
   const taxes = roundToCents((rateSubtotal + cleaningFee) * taxRate);
   const totalAmount = roundToCents(rateSubtotal + cleaningFee + taxes);
 
